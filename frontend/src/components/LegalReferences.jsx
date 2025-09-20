@@ -1,10 +1,344 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { FaSearch, FaBook, FaChevronDown, FaChevronUp, FaDownload, FaShare, FaBookmark } from 'react-icons/fa'
 
 const LegalReferences = () => {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [pdfReferences, setPdfReferences] = useState({})
+  const [pdfLoading, setPdfLoading] = useState(false)
+  const [pdfError, setpdfError] = useState(null)
+  const [selectedPdfTab, setSelectedPdfTab] = useState(null)
+  const [pdfSearchQuery, setPdfSearchQuery] = useState('')
+  const [pdfSearchResults, setPdfSearchResults] = useState([])
+  const [expandedPdfResults, setExpandedPdfResults] = useState({})
 
-  // Mock data for legal references
+  // PDF Document Tabs
+  const pdfTabs = [
+    { id: 'bns', name: 'BNS', fullName: 'Bharatiya Nyaya Sanhita' },
+    { id: 'sop', name: 'SOP', fullName: 'Standard Operating Procedures' },
+    { id: 'delhiPolice', name: 'Delhi Police', fullName: 'Delhi Police Guidelines' },
+    { id: 'datasets', name: 'Case Precedents', fullName: 'Case Precedents & Judgments' },
+  ]
+
+  // Fetch PDF references when component mounts
+  useEffect(() => {
+    fetchPdfReferences()
+  }, [])
+
+  // Fetch PDF references
+  const fetchPdfReferences = async () => {
+    try {
+      setPdfLoading(true)
+      const response = await fetch('http://localhost:3001/api/legal-references')
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`)
+      }
+      
+      const data = await response.json()
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to fetch legal references')
+      }
+      
+      setPdfReferences(data.summary || {})
+      
+      // Select the first available reference
+      if (data.availableReferences && data.availableReferences.length > 0) {
+        setSelectedPdfTab(data.availableReferences[0])
+        await fetchPdfReferenceByType(data.availableReferences[0])
+      }
+      
+    } catch (err) {
+      console.error('Error fetching PDF references:', err)
+      setpdfError(err.message)
+    } finally {
+      setPdfLoading(false)
+    }
+  }
+
+  // Fetch a specific PDF reference by type
+  const fetchPdfReferenceByType = async (type) => {
+    if (!type) return
+    
+    try {
+      setPdfLoading(true)
+      const response = await fetch(`http://localhost:3001/api/legal-references?type=${type}`)
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`)
+      }
+      
+      const data = await response.json()
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to fetch legal reference')
+      }
+      
+      // Update the references state with the full content for this type
+      setPdfReferences(prev => ({
+        ...prev,
+        [type]: {
+          ...(prev[type] || {}),
+          fullContent: data.content
+        }
+      }))
+      
+    } catch (err) {
+      console.error(`Error fetching ${type} reference:`, err)
+      setpdfError(err.message)
+    } finally {
+      setPdfLoading(false)
+    }
+  }
+
+  // Search within the current PDF reference type
+  const searchPdfContent = async () => {
+    if (!pdfSearchQuery.trim() || !selectedPdfTab) {
+      setPdfSearchResults([])
+      return
+    }
+    
+    try {
+      setPdfLoading(true)
+      // Add contextSize parameter for more content around matches
+      const contextSize = 40; // Adjust as needed for more or less context
+      const response = await fetch(`http://localhost:3001/api/legal-references?type=${selectedPdfTab}&query=${encodeURIComponent(pdfSearchQuery)}&contextSize=${contextSize}`)
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`)
+      }
+      
+      const data = await response.json()
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to search in legal reference')
+      }
+      
+      setPdfSearchResults(data.results || [])
+      
+      // If we received search keywords that were used for matching, store them for highlighting
+      const searchKeywords = data.searchKeywords || [pdfSearchQuery.toLowerCase()];
+      
+      // Initialize expanded state and highlight matches in results
+      const initialExpandedState = {};
+      
+      // If there are fewer than 3 results, automatically expand them
+      if (data.results && data.results.length <= 3) {
+        data.results.forEach((_, index) => {
+          initialExpandedState[index] = true;
+        });
+      }
+      
+      setExpandedPdfResults(initialExpandedState)
+      
+    } catch (err) {
+      console.error('Error searching references:', err)
+      setpdfError(err.message)
+    } finally {
+      setPdfLoading(false)
+    }
+  }
+
+  // Toggle expanded state of a PDF search result
+  const togglePdfResultExpansion = (index) => {
+    setExpandedPdfResults(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }))
+  }
+  
+  // Change PDF tab
+  const changePdfTab = (tabId) => {
+    setSelectedPdfTab(tabId)
+    setPdfSearchResults([])
+    setPdfSearchQuery('')
+    fetchPdfReferenceByType(tabId)
+  }
+  
+  // Render PDF Viewer component
+  const renderPdfViewer = () => {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-4 mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+          <FaBook className="mr-2 text-blue-700" />
+          Legal Reference Documents
+        </h2>
+        
+        {/* Tabs */}
+        <div className="flex mb-4 border-b border-gray-300 overflow-x-auto">
+          {pdfTabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => changePdfTab(tab.id)}
+              className={`px-4 py-2 font-medium text-sm whitespace-nowrap ${
+                selectedPdfTab === tab.id
+                  ? 'text-blue-700 border-b-2 border-blue-700'
+                  : 'text-gray-600 hover:text-blue-600'
+              }`}
+              disabled={!pdfReferences[tab.id]}
+            >
+              {tab.name}
+              {!pdfReferences[tab.id] && <span className="ml-1 text-xs text-red-500">(N/A)</span>}
+            </button>
+          ))}
+        </div>
+        
+        {/* Active Tab Title */}
+        {selectedPdfTab && (
+          <div className="mb-4">
+            <h3 className="text-lg font-medium text-gray-700">
+              {pdfTabs.find(tab => tab.id === selectedPdfTab)?.fullName || 'Document'}
+            </h3>
+            <p className="text-sm text-gray-500">
+              {pdfReferences[selectedPdfTab]?.size 
+                ? `Document size: ${Math.round(pdfReferences[selectedPdfTab].size / 1024)} KB` 
+                : 'Document not available'}
+            </p>
+          </div>
+        )}
+        
+        {/* Search Bar */}
+        {selectedPdfTab && (
+          <div className="flex mb-4">
+            <input
+              type="text"
+              value={pdfSearchQuery}
+              onChange={(e) => setPdfSearchQuery(e.target.value)}
+              placeholder={`Search within ${pdfTabs.find(tab => tab.id === selectedPdfTab)?.name} document...`}
+              className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onKeyDown={(e) => e.key === 'Enter' && searchPdfContent()}
+            />
+            <button
+              onClick={searchPdfContent}
+              className="bg-blue-700 text-white px-4 py-2 rounded-r-md hover:bg-blue-800 flex items-center"
+            >
+              <FaSearch />
+            </button>
+          </div>
+        )}
+        
+        {/* Error Message */}
+        {pdfError && (
+          <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
+            {pdfError}
+          </div>
+        )}
+        
+        {/* Loading Indicator */}
+        {pdfLoading && (
+          <div className="flex justify-center items-center py-10">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-700"></div>
+          </div>
+        )}
+        
+              {/* Search Results */}
+              {!pdfLoading && pdfSearchResults.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-md font-medium text-gray-700 mb-2">
+                    {pdfSearchResults.length} {pdfSearchResults.length === 1 ? 'result' : 'results'} for "{pdfSearchQuery}"
+                  </h4>
+                  <div className="space-y-3 overflow-y-auto max-h-96">
+                    {pdfSearchResults.map((result, i) => {
+                      // Extract a preview that includes the search term for better context
+                      const searchTermLower = pdfSearchQuery.toLowerCase();
+                      let previewText = result;
+                      
+                      // Find the position of the search term
+                      const searchTermIndex = result.toLowerCase().indexOf(searchTermLower);
+                      
+                      // If found, create a preview centered around it
+                      if (searchTermIndex !== -1) {
+                        const startIndex = Math.max(0, searchTermIndex - 40);
+                        const endIndex = Math.min(result.length, searchTermIndex + pdfSearchQuery.length + 40);
+                        previewText = (startIndex > 0 ? '...' : '') + 
+                                      result.substring(startIndex, endIndex) + 
+                                      (endIndex < result.length ? '...' : '');
+                      } else if (result.length > 100) {
+                        previewText = result.substring(0, 100) + '...';
+                      }
+                      
+                      return (
+                        <div key={i} className="border border-gray-200 rounded-md p-3 bg-white hover:shadow-md transition-shadow">
+                          <div className="flex justify-between">
+                            <button
+                              onClick={() => togglePdfResultExpansion(i)}
+                              className="flex items-center text-gray-800 font-medium hover:text-blue-700 w-full text-left"
+                            >
+                              <span className="mr-2 text-blue-600">
+                                {expandedPdfResults[i] ? <FaChevronUp /> : <FaChevronDown />}
+                              </span>
+                              <span>
+                                {/* Highlight the search term in the preview */}
+                                {previewText.split(new RegExp(`(${pdfSearchQuery})`, 'gi')).map((part, j) => 
+                                  part.toLowerCase() === pdfSearchQuery.toLowerCase() 
+                                    ? <mark key={j} className="bg-yellow-200 font-medium">{part}</mark>
+                                    : part
+                                )}
+                              </span>
+                            </button>
+                          </div>
+                          
+                          {expandedPdfResults[i] && (
+                            <div className="mt-3 text-gray-700 bg-gray-50 p-4 rounded-md whitespace-pre-wrap border-l-4 border-blue-500">
+                              {/* Highlight all matches of the search term */}
+                              {result.split(new RegExp(`(${pdfSearchQuery})`, 'gi')).map((part, j) => 
+                                part.toLowerCase() === pdfSearchQuery.toLowerCase() 
+                                  ? <mark key={j} className="bg-yellow-200 font-medium">{part}</mark>
+                                  : part
+                              )}
+                              
+                              {/* Actions for this result */}
+                              <div className="mt-3 pt-3 border-t border-gray-200 flex flex-wrap gap-2">
+                                <button 
+                                  className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full hover:bg-blue-100"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigator.clipboard.writeText(result);
+                                  }}
+                                >
+                                  <FaShare className="mr-1" /> Copy text
+                                </button>
+                                <button 
+                                  className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full hover:bg-blue-100"
+                                >
+                                  <FaBookmark className="mr-1" /> Save reference
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}        {/* No Results Message */}
+        {!pdfLoading && pdfSearchQuery && pdfSearchResults.length === 0 && (
+          <div className="py-10 text-center text-gray-500">
+            No results found for "{pdfSearchQuery}"
+          </div>
+        )}
+        
+        {/* Document Preview */}
+        {!pdfLoading && !pdfSearchQuery && selectedPdfTab && pdfReferences[selectedPdfTab]?.fullContent && (
+          <div className="h-96 overflow-y-auto bg-gray-50 p-4 rounded-md border border-gray-200">
+            <pre className="whitespace-pre-wrap text-gray-800 font-sans text-sm">
+              {pdfReferences[selectedPdfTab].fullContent}
+            </pre>
+          </div>
+        )}
+
+        {/* No Document Selected */}
+        {!selectedPdfTab && !pdfLoading && (
+          <div className="py-10 text-center text-gray-500">
+            Select a document tab above to view legal references
+          </div>
+        )}
+      </div>
+    )
+  }
+  
+  // Existing mock data for legal references
   const legalReferencesData = [
     {
       id: 1,
@@ -742,6 +1076,15 @@ const LegalReferences = () => {
         <div className="mb-6 lg:mb-8">
           <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Legal References</h1>
           <p className="text-sm lg:text-base text-gray-600">Comprehensive legal database for criminal law, procedures, and guidelines</p>
+        </div>
+        
+        {/* PDF Viewer Section */}
+        {renderPdfViewer()}
+        
+        {/* Reference Database Section Header */}
+        <div className="mb-6">
+          <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">Legal Reference Database</h2>
+          <p className="text-sm text-gray-600">Browse indexed legal sections, guidelines, and procedures</p>
         </div>
 
         {/* Filters and Search */}

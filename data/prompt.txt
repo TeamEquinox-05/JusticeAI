@@ -1,0 +1,3 @@
+io will tell name date age etc and respective laws related to that will be triggered. 
+after that details etc will be taken. then more questions related to the case will be asked it will depend on the case and keep on asking questions. right now it is asking only 8 which is not enough. 
+when filling the form the io can see live preview of fir being filled along with checklist and charges which he can see it should generate charge sheet like how actually happens. it should be professional as this project is for police do i need existing similar cases first so it can ask accurately?

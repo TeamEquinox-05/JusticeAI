@@ -6,6 +6,9 @@ const DynamicQuestionForm = ({ caseId, questions, onComplete, onBack }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [firPreview, setFirPreview] = useState('');
+  const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
+  const [showFirPreview, setShowFirPreview] = useState(false);
 
   useEffect(() => {
     // Initialize answers object
@@ -28,6 +31,53 @@ const DynamicQuestionForm = ({ caseId, questions, onComplete, onBack }) => {
         ...prev,
         [questionIndex]: null
       }));
+    }
+    
+    // If we have enough answers (at least 30% of questions answered), generate FIR preview
+    const answeredCount = Object.values(answers).filter(a => a && a.toString().trim() !== '').length;
+    if (answeredCount > Math.max(3, Math.floor(questions.length * 0.3))) {
+      // Debounce the preview generation to avoid too many API calls
+      if (window.firPreviewTimeout) {
+        clearTimeout(window.firPreviewTimeout);
+      }
+      window.firPreviewTimeout = setTimeout(() => {
+        generateFirPreview();
+      }, 2000);
+    }
+  };
+  
+  // Function to generate FIR preview based on current answers
+  const generateFirPreview = async () => {
+    if (isGeneratingPreview) return;
+    
+    setIsGeneratingPreview(true);
+    try {
+      // Find the question IDs
+      const questionMap = {};
+      questions.forEach((q, index) => {
+        questionMap[index] = q.questionId || `q${index + 1}`;
+      });
+      
+      // Convert answers from index-based to questionId-based
+      const formattedAnswers = {};
+      Object.entries(answers).forEach(([index, value]) => {
+        if (value && value.toString().trim() !== '') {
+          formattedAnswers[questionMap[index]] = value;
+        }
+      });
+      
+      const response = await axios.post(`http://localhost:3001/api/case/${caseId}/generate-document`, {
+        documentType: 'fir',
+        answers: formattedAnswers  // Send the current answers to include in the preview
+      });
+
+      if (response.data && response.data.success) {
+        setFirPreview(response.data.documentContent);
+      }
+    } catch (error) {
+      console.error('Error generating FIR preview:', error);
+    } finally {
+      setIsGeneratingPreview(false);
     }
   };
 
@@ -259,6 +309,13 @@ const DynamicQuestionForm = ({ caseId, questions, onComplete, onBack }) => {
                   ← Previous
                 </button>
               )}
+              
+              <button
+                onClick={() => setShowFirPreview(!showFirPreview)}
+                className={`px-6 py-3 ${showFirPreview ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'} rounded-lg hover:bg-purple-200 transition-colors duration-200 font-medium`}
+              >
+                {showFirPreview ? 'Hide FIR Preview' : 'Show FIR Preview'}
+              </button>
             </div>
 
             <div className="flex space-x-3">
@@ -290,6 +347,51 @@ const DynamicQuestionForm = ({ caseId, questions, onComplete, onBack }) => {
               )}
             </div>
           </div>
+          
+          {/* Live FIR Preview */}
+          {showFirPreview && (
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-800">Live FIR Preview</h3>
+                {isGeneratingPreview && (
+                  <div className="flex items-center text-sm text-gray-500">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Updating...
+                  </div>
+                )}
+              </div>
+              
+              {firPreview ? (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 font-mono text-sm whitespace-pre-wrap overflow-auto max-h-[500px]">
+                  {firPreview}
+                </div>
+              ) : (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center text-gray-500">
+                  {Object.keys(answers).length > 0 ? (
+                    <div>
+                      <p className="mb-2">Generating FIR preview...</p>
+                      <p className="text-xs">Continue answering questions to see the FIR update in real-time</p>
+                    </div>
+                  ) : (
+                    <p>Answer more questions to generate a live FIR preview</p>
+                  )}
+                </div>
+              )}
+              
+              <div className="flex justify-end mt-4">
+                <button 
+                  onClick={generateFirPreview}
+                  disabled={isGeneratingPreview}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Refresh Preview
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Question Navigator */}

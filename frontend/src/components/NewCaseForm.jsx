@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import CaseAnalysisReport from './CaseAnalysisReport'
 import DynamicQuestionForm from './DynamicQuestionForm'
+import FIRFormTemplate from './FIRFormTemplate'
 
 const NewCaseForm = ({ onBack }) => {
   const [formData, setFormData] = useState({
@@ -21,30 +22,33 @@ const NewCaseForm = ({ onBack }) => {
   const [currentSection, setCurrentSection] = useState(0)
   const [showAnalysisReport, setShowAnalysisReport] = useState(false)
   const [showDynamicQuestions, setShowDynamicQuestions] = useState(false)
+  const [showFIRTemplate, setShowFIRTemplate] = useState(true) // Start with FIR template
   const [dynamicQuestions, setDynamicQuestions] = useState([])
   const [currentCaseId, setCurrentCaseId] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [completedCase, setCompletedCase] = useState(null)
+  
+  // Automatically generate a unique case ID when the component mounts
+  useEffect(() => {
+    const year = new Date().getFullYear();
+    const randomId = Math.floor(10000 + Math.random() * 90000);
+    setFormData(prev => ({
+      ...prev,
+      caseId: `FIR${randomId}/${year}`
+    }));
+  }, [])
 
-  const handleSubmitCase = async () => {
-    // Validate required fields
-    const requiredFields = ['caseId', 'caseTitle', 'caseDescription'];
-    const missingFields = requiredFields.filter(field => !formData[field] || formData[field].trim() === '');
-    
-    if (missingFields.length > 0) {
-      alert(`Please fill in the following required fields: ${missingFields.join(', ')}`);
-      return;
-    }
-
+  const handleSubmitCase = async (formDataToSubmit = formData) => {
     setIsSubmitting(true);
     
     try {
       // Submit the case to the backend and get dynamic questions
-      const response = await axios.post('http://localhost:3001/api/submit-case', formData);
+      const response = await axios.post('http://localhost:3001/api/submit-case', formDataToSubmit);
       
       if (response.data.success) {
         setCurrentCaseId(response.data.caseId);
         setDynamicQuestions(response.data.questions);
+        setShowFIRTemplate(false);
         setShowDynamicQuestions(true);
       } else {
         console.error('Failed to submit case:', response.data.error);
@@ -56,6 +60,13 @@ const NewCaseForm = ({ onBack }) => {
     } finally {
       setIsSubmitting(false);
     }
+  }
+  
+  const handleFIRFormSubmit = (firFormData) => {
+    // Update our form data with the FIR form data
+    setFormData(firFormData);
+    // Submit the case with the updated form data
+    handleSubmitCase(firFormData);
   }
 
   const handleContinueEditing = () => {
@@ -70,6 +81,18 @@ const NewCaseForm = ({ onBack }) => {
 
   const handleBackFromQuestions = () => {
     setShowDynamicQuestions(false);
+  }
+
+  // If showing FIR Template form, render that component
+  if (showFIRTemplate) {
+    return (
+      <FIRFormTemplate 
+        formData={formData}
+        onFormSubmit={handleFIRFormSubmit}
+        onBack={onBack}
+        isSubmitting={isSubmitting}
+      />
+    );
   }
 
   // If showing dynamic questions, render that component
