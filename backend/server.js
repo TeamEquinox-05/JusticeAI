@@ -240,6 +240,98 @@ app.post('/api/submit-answers', async (req, res) => {
   }
 });
 
+// Submit victim case (direct submission without AI questions)
+app.post('/api/submit-victim-case', async (req, res) => {
+  try {
+    const caseData = req.body;
+    console.log('Received victim case data:', caseData);
+
+    // Validate required fields
+    const requiredFields = ['name', 'age', 'gender', 'incidentDate', 'location', 'description', 'offenceType'];
+    const missingFields = requiredFields.filter(field => !caseData[field] || caseData[field].toString().trim() === '');
+    
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields',
+        missingFields: missingFields
+      });
+    }
+
+    // Validate contact information (either phone or email required)
+    if (!caseData.phone?.trim() && !caseData.email?.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Either phone number or email is required'
+      });
+    }
+
+    // Store the victim case
+    const responses = await readResponses();
+    const newCase = {
+      id: caseData.caseId || `VIC-${Date.now()}`,
+      submittedAt: new Date().toISOString(),
+      submissionType: 'victim_input',
+      status: 'Pending IO Assignment',
+      basicInfo: {
+        caseId: caseData.caseId,
+        caseTitle: caseData.caseTitle,
+        caseDescription: caseData.description,
+        victimAge: caseData.age,
+        victimGender: caseData.gender,
+        victimLocation: caseData.location,
+        incidentDate: caseData.incidentDate,
+        incidentTime: caseData.incidentTime || null
+      },
+      victimDetails: {
+        name: caseData.name,
+        age: caseData.age,
+        gender: caseData.gender,
+        phone: caseData.phone || null,
+        email: caseData.email || null
+      },
+      incidentDetails: {
+        date: caseData.incidentDate,
+        time: caseData.incidentTime || null,
+        location: caseData.location,
+        description: caseData.description,
+        offenceType: caseData.offenceType
+      },
+      evidence: {
+        files: caseData.evidenceFiles || [],
+        fileCount: (caseData.evidenceFiles || []).length
+      },
+      completed: true,
+      requiresIOAssignment: true
+    };
+
+    responses.cases.push(newCase);
+    const writeSuccess = await writeResponses(responses);
+
+    if (writeSuccess) {
+      res.json({
+        success: true,
+        message: 'Victim case submitted successfully',
+        caseId: newCase.id,
+        case: newCase
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to save case data'
+      });
+    }
+
+  } catch (error) {
+    console.error('Error in submit-victim-case:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to submit victim case',
+      details: error.message
+    });
+  }
+});
+
 // Get all cases
 app.get('/api/cases', async (req, res) => {
   try {

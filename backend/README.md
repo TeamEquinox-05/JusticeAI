@@ -88,17 +88,56 @@ Submits answers to the generated questions.
 }
 ```
 
-### 3. Get All Cases
+### 3. Submit Victim Case
+**POST** `/api/submit-victim-case`
+
+Direct submission for victim input mode (no AI questions generated).
+
+**Request Body**:
+```json
+{
+  "name": "Victim Name",
+  "age": "25",
+  "gender": "Female",
+  "phone": "+1234567890",
+  "email": "victim@example.com",
+  "incidentDate": "2025-01-01",
+  "incidentTime": "14:30",
+  "location": "City, State",
+  "description": "Detailed incident description",
+  "offenceType": "Sexual Assault",
+  "evidenceFiles": [],
+  "caseId": "VIC-123456789",
+  "caseTitle": "Sexual Assault - Victim Name"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Victim case submitted successfully",
+  "caseId": "VIC-123456789",
+  "case": {
+    "id": "VIC-123456789",
+    "status": "Pending IO Assignment",
+    "submissionType": "victim_input",
+    "submittedAt": "2025-01-01T12:00:00.000Z"
+  }
+}
+```
+
+### 4. Get All Cases
 **GET** `/api/cases`
 
 Returns all submitted cases.
 
-### 4. Get Specific Case
+### 5. Get Specific Case
 **GET** `/api/cases/:id`
 
 Returns a specific case by ID.
 
-### 5. Health Check
+### 6. Health Check
 **GET** `/api/health`
 
 Returns server status.
