@@ -1,13 +1,25 @@
 import { useState, useEffect } from 'react'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 import Sidebar from './components/Sidebar'
 import Dashboard from './components/Dashboard'
 import Cases from './components/Cases'
 import LegalReferences from './components/LegalReferences'
 import VictimForm from './components/VictimForm'
+import DocumentUpload from './components/DocumentUpload'
 
 function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  )
+}
+
+function AppContent() {
   const [activeView, setActiveView] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { isAuthenticated } = useAuth()
 
   // Check URL parameters for direct access
   useEffect(() => {
@@ -21,31 +33,55 @@ function App() {
   const renderContent = () => {
     switch (activeView) {
       case 'dashboard':
-        return <Dashboard />
+        return (
+          <ProtectedRoute requiredRoles={['admin', 'officer', 'investigator']}>
+            <Dashboard />
+          </ProtectedRoute>
+        )
       case 'cases':
-        return <Cases />
+        return (
+          <ProtectedRoute requiredRoles={['admin', 'officer', 'investigator']}>
+            <Cases />
+          </ProtectedRoute>
+        )
       case 'legal-references':
-        return <LegalReferences />
+        return (
+          <ProtectedRoute requiredRoles={['admin', 'officer', 'investigator']}>
+            <LegalReferences />
+          </ProtectedRoute>
+        )
       case 'victim-form':
         return <VictimForm onNavigateBack={() => setActiveView('dashboard')} />
+      case 'document-upload':
+        return (
+          <ProtectedRoute requiredRoles={['admin', 'officer', 'investigator']}>
+            <DocumentUpload />
+          </ProtectedRoute>
+        )
       case 'settings':
         return (
-          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Settings</h1>
-              <p className="text-gray-600">Application settings coming soon...</p>
+          <ProtectedRoute requiredRole="admin">
+            <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+              <div className="max-w-4xl mx-auto text-center">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Settings</h1>
+                <p className="text-gray-600">Application settings coming soon...</p>
+              </div>
             </div>
-          </div>
+          </ProtectedRoute>
         )
       default:
-        return <Dashboard />
+        return (
+          <ProtectedRoute requiredRoles={['admin', 'officer', 'investigator']}>
+            <Dashboard />
+          </ProtectedRoute>
+        )
     }
   }
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Hide sidebar for victim form */}
-      {activeView !== 'victim-form' && (
+      {/* Hide sidebar for victim form OR if user is not authenticated */}
+      {activeView !== 'victim-form' && isAuthenticated() && (
         <>
           {/* Mobile Glass Overlay */}
           {sidebarOpen && (
@@ -70,9 +106,9 @@ function App() {
       )}
 
       {/* Main Content */}
-      <div className={`${activeView === 'victim-form' ? 'w-full' : 'flex-1'} flex flex-col overflow-hidden`}>
-        {/* Hide mobile header for victim form */}
-        {activeView !== 'victim-form' && (
+      <div className={`${(activeView === 'victim-form' || !isAuthenticated()) ? 'w-full' : 'flex-1'} flex flex-col overflow-hidden`}>
+        {/* Hide mobile header for victim form OR if user is not authenticated */}
+        {activeView !== 'victim-form' && isAuthenticated() && (
           <div className="lg:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3">
             <div className="flex items-center justify-between">
               <button

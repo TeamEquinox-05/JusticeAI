@@ -2,8 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs-extra');
 const path = require('path');
+const multer = require('multer');
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
+const Tesseract = require('tesseract.js');
 require('dotenv').config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// Import authentication routes
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -16,6 +23,35 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword',
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/bmp',
+      'image/tiff'
+    ];
+    
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF, Word documents, and images are allowed.'));
+    }
+  }
+});
+
+// Authentication routes
+app.use('/api/auth', authRoutes);
 
 // File paths
 const responsesFilePath = path.join(__dirname, '../frontend/responses.json');
@@ -60,6 +96,120 @@ const writeResponses = async (data) => {
 };
 
 // API Routes
+
+// Text extraction endpoint
+app.post('/api/extract-text', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const file = req.file;
+    const fileBuffer = file.buffer;
+    let extractedText = '';
+
+    console.log(`Processing file: ${file.originalname}, MIME type: ${file.mimetype}`);
+
+    // Extract text based on file type
+    switch (file.mimetype) {
+      case 'application/pdf':
+        try {
+          console.log('Processing PDF file...');
+          const pdfData = await pdfParse(fileBuffer);
+          extractedText = pdfData.text;
+          
+          // If no text found or very little text, it might be an image-based PDF
+          if (!extractedText || extractedText.trim().length < 50) {
+            console.log('PDF has minimal text, attempting OCR on PDF content...');
+            
+            try {
+              // Use Tesseract to extract text from the PDF as if it's an image
+              const { data: { text } } = await Tesseract.recognize(fileBuffer, 'eng', {
+                logger: m => console.log('OCR Progress:', m.status, m.progress)
+              });
+              
+              if (text && text.trim().length > extractedText.length) {
+                extractedText = text;
+                console.log('OCR extracted more text than PDF parsing');
+              }
+            } catch (ocrError) {
+              console.log('OCR on PDF failed, using text-based extraction result:', ocrError.message);
+            }
+          }
+          
+          // If still no meaningful text, inform user
+          if (!extractedText || extractedText.trim().length < 10) {
+            throw new Error('No readable text found in PDF. The document may be encrypted, corrupted, or contain only non-text elements.');
+          }
+          
+        } catch (error) {
+          console.error('PDF parsing error:', error);
+          throw new Error('Failed to extract text from PDF: ' + error.message);
+        }
+        break;
+
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+      case 'application/msword':
+        try {
+          const result = await mammoth.extractRawText({ buffer: fileBuffer });
+          extractedText = result.value;
+        } catch (error) {
+          console.error('Word document parsing error:', error);
+          throw new Error('Failed to extract text from Word document');
+        }
+        break;
+
+      case 'image/jpeg':
+      case 'image/png':
+      case 'image/gif':
+      case 'image/bmp':
+      case 'image/tiff':
+        try {
+          console.log('Processing image file with OCR...');
+          const { data: { text } } = await Tesseract.recognize(fileBuffer, 'eng', {
+            logger: m => {
+              if (m.status === 'recognizing text') {
+                console.log(`OCR Progress: ${Math.round(m.progress * 100)}%`);
+              }
+            }
+          });
+          extractedText = text;
+          
+          if (!extractedText || extractedText.trim().length < 5) {
+            throw new Error('No readable text found in the image. The image may be too blurry, low quality, or contain no text.');
+          }
+          
+        } catch (error) {
+          console.error('OCR processing error:', error);
+          throw new Error('Failed to extract text from image: ' + error.message);
+        }
+        break;
+
+      default:
+        throw new Error('Unsupported file type');
+    }
+
+    // Clean up the extracted text
+    extractedText = extractedText.trim();
+    
+    if (!extractedText) {
+      return res.status(400).json({ error: 'No text could be extracted from the document' });
+    }
+
+    res.json({
+      success: true,
+      text: extractedText,
+      filename: file.originalname,
+      fileType: file.mimetype
+    });
+
+  } catch (error) {
+    console.error('Text extraction error:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to extract text from document'
+    });
+  }
+});
 
 // Submit initial case data and generate questions
 app.post('/api/submit-case', async (req, res) => {

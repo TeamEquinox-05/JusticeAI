@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "$2b$10$2YQ3Mnh2aJ6hExvtybenFeikYqcl8tAJsS9hpH/zQP/fT0D/42LMy",
+      "email": "admin@justiceai.com",
+      "role": "admin",
+      "name": "System Administrator",
+      "created_at": "2025-09-20T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "username": "officer",
+      "password": "$2b$10$0i.84.0zxhKqsALY0/l63ePZw5PEjG2aLx9zbYOY8DsONd56jndVe",
+      "email": "officer@justiceai.com",
+      "role": "officer",
+      "name": "Police Officer",
+      "created_at": "2025-09-20T00:00:00Z"
+    },
+    {
+      "id": 3,
+      "username": "investigator", 
+      "password": "$2b$10$mpsIHxjrJCfTVDLNLGalweUxOHYSZGnD9k/RlPkvZXtJ3fTy/2sPK",
+      "email": "investigator@justiceai.com",
+      "role": "investigator",
+      "name": "Investigation Officer",
+      "created_at": "2025-09-20T00:00:00Z"
+    }
+  ],
+  "defaultPasswords": {
+    "admin": "admin123",
+    "officer": "officer123", 
+    "investigator": "invest123"
+  }
+}
