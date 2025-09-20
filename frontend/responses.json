@@ -1,0 +1,175 @@
+{
+  "cases": [
+    {
+      "id": "1758341655882",
+      "submittedAt": "2025-09-20T04:14:15.882Z",
+      "basicInfo": {
+        "caseId": "420",
+        "caseTitle": "cyber assault on a child",
+        "caseDescription": "the victim was assaulted by online social media platform",
+        "victimAge": "14",
+        "victimGender": "male",
+        "victimLocation": "Panaji",
+        "incidentDate": "2025-09-18",
+        "incidentTime": "09:46",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What specific type of cyber assault occurred?",
+          "type": "textarea",
+          "placeholder": "Describe the nature of the assault (e.g., grooming, harassment, threats, etc.)",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What social media platform was used?",
+          "type": "text",
+          "placeholder": "Name of the platform (e.g., Facebook, Instagram, etc.)",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What evidence is available (screenshots, logs, messages, etc.)?",
+          "type": "textarea",
+          "placeholder": "Describe the evidence and its location",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the online interaction?",
+          "type": "textarea",
+          "placeholder": "Provide details about any witnesses, if any.",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "What is the victim's full name?",
+          "type": "text",
+          "placeholder": "Victim's Full Name",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the victim's contact information?",
+          "type": "text",
+          "placeholder": "Phone number or email address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the assailant's known information (username, profile details, etc.)?",
+          "type": "textarea",
+          "placeholder": "Any details that could identify the assailant",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has the victim experienced any psychological trauma or other harm as a result of the assault?",
+          "type": "textarea",
+          "placeholder": "Describe any physical or emotional effects on the victim",
+          "options": [],
+          "required": true
+        }
+      ],
+      "answers": {},
+      "completed": false
+    },
+    {
+      "id": "1758341787384",
+      "submittedAt": "2025-09-20T04:16:27.384Z",
+      "basicInfo": {
+        "caseId": "420",
+        "caseTitle": "cyber assault on a child",
+        "caseDescription": "the victim was assaulted by online social media platform",
+        "victimAge": "14",
+        "victimGender": "male",
+        "victimLocation": "Panaji",
+        "incidentDate": "2025-09-18",
+        "incidentTime": "09:46",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What specific type of cyber assault occurred?",
+          "type": "textarea",
+          "placeholder": "Describe the nature of the assault (e.g., harassment, threats, grooming, exposure to inappropriate content, etc.)",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Which social media platform was involved?",
+          "type": "text",
+          "placeholder": "Name of the platform (e.g., Facebook, Instagram, TikTok)",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What evidence is available (screenshots, messages, etc.)?",
+          "type": "textarea",
+          "placeholder": "Describe the evidence and its location (e.g., saved on phone, cloud storage, etc.)",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the perpetrator's identity (if known)?",
+          "type": "text",
+          "placeholder": "Name, username, profile details, etc.  If unknown, specify 'Unknown'",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has the victim received any psychological support or counselling?",
+          "type": "select",
+          "placeholder": "Select an option",
+          "options": [
+            "Yes",
+            "No",
+            "Not Yet"
+          ],
+          "required": true
+        },
+        {
+          "question": "What is the victim's contact information (parent/guardian)?",
+          "type": "text",
+          "placeholder": "Phone number and/or email address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Has a police report been filed?",
+          "type": "select",
+          "placeholder": "Select an option",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the online interaction?",
+          "type": "textarea",
+          "placeholder": "Describe any witnesses and their involvement, if any.",
+          "options": [],
+          "required": false
+        }
+      ],
+      "answers": {
+        "0": "Sexual",
+        "1": "Reddit",
+        "2": "Nothing",
+        "3": "Fayaz Kahan",
+        "4": "No",
+        "5": "9209352504",
+        "6": "No",
+        "7": "No"
+      },
+      "completed": true,
+      "completedAt": "2025-09-20T04:18:07.848Z"
+    }
+  ]
+}

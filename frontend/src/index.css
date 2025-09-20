@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/* Custom Legal Tech Theme */
+:root {
+  --navy-50: #f8fafc;
+  --navy-100: #f1f5f9;
+  --navy-200: #e2e8f0;
+  --navy-300: #cbd5e1;
+  --navy-400: #94a3b8;
+  --navy-500: #64748b;
+  --navy-600: #475569;
+  --navy-700: #334155;
+  --navy-800: #1e293b;
+  --navy-900: #0f172a;
+}
+
+/* Custom utility classes */
+.bg-navy-50 { background-color: var(--navy-50); }
+.bg-navy-100 { background-color: var(--navy-100); }
+.bg-navy-200 { background-color: var(--navy-200); }
+.bg-navy-300 { background-color: var(--navy-300); }
+.bg-navy-400 { background-color: var(--navy-400); }
+.bg-navy-500 { background-color: var(--navy-500); }
+.bg-navy-600 { background-color: var(--navy-600); }
+.bg-navy-700 { background-color: var(--navy-700); }
+.bg-navy-800 { background-color: var(--navy-800); }
+.bg-navy-900 { background-color: var(--navy-900); }
+
+.text-navy-50 { color: var(--navy-50); }
+.text-navy-100 { color: var(--navy-100); }
+.text-navy-200 { color: var(--navy-200); }
+.text-navy-300 { color: var(--navy-300); }
+.text-navy-400 { color: var(--navy-400); }
+.text-navy-500 { color: var(--navy-500); }
+.text-navy-600 { color: var(--navy-600); }
+.text-navy-700 { color: var(--navy-700); }
+.text-navy-800 { color: var(--navy-800); }
+.text-navy-900 { color: var(--navy-900); }
+
+.border-navy-50 { border-color: var(--navy-50); }
+.border-navy-100 { border-color: var(--navy-100); }
+.border-navy-200 { border-color: var(--navy-200); }
+.border-navy-300 { border-color: var(--navy-300); }
+.border-navy-400 { border-color: var(--navy-400); }
+.border-navy-500 { border-color: var(--navy-500); }
+.border-navy-600 { border-color: var(--navy-600); }
+.border-navy-700 { border-color: var(--navy-700); }
+.border-navy-800 { border-color: var(--navy-800); }
+.border-navy-900 { border-color: var(--navy-900); }
+
+/* Smooth animations */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar for modern look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--navy-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--navy-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-400);
+}
+
+/* Professional font styling */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: var(--navy-800);
+}
