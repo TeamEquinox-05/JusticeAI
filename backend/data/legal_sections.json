@@ -1,0 +1,571 @@
+{
+  "bns": [
+    {
+      "section": "64",
+      "title": "Outraging modesty of woman",
+      "description": "Assault or use of criminal force to a woman with intent to outrage her modesty.",
+      "plainLanguage": "This section applies when someone uses force or assault against a woman that violates her dignity or modesty. Examples include unwanted touching or physical contact of a sexual nature.",
+      "punishment": "Imprisonment up to 3 years and fine",
+      "applicableTo": ["sexual_harassment", "molestation", "unwanted_touching"]
+    },
+    {
+      "section": "65",
+      "title": "Sexual harassment",
+      "description": "Physical contact and advances involving unwelcome and explicit sexual overtures, demand or request for sexual favors, showing pornography against the will of a woman, or making sexually colored remarks.",
+      "plainLanguage": "Applies to unwanted sexual advances, requests for sexual favors, showing pornography without consent, or making sexually inappropriate comments directed at a woman.",
+      "punishment": "Imprisonment up to 3 years or fine or both",
+      "applicableTo": ["sexual_harassment", "verbal_harassment", "workplace_harassment"]
+    },
+    {
+      "section": "66",
+      "title": "Workplace harassment",
+      "description": "Sexual harassment of a woman at a workplace by a person in authority or in charge.",
+      "plainLanguage": "This section specifically addresses sexual harassment in workplace settings, especially when committed by someone in a position of power or authority.",
+      "punishment": "Imprisonment between 1 to 5 years and fine",
+      "applicableTo": ["workplace_harassment", "power_abuse", "professional_relationships"]
+    },
+    {
+      "section": "63",
+      "title": "Arrest provisions",
+      "description": "Special provisions regarding arrest in cases of sexual harassment.",
+      "plainLanguage": "Details specific procedures and permissions required for arrest in sexual harassment cases.",
+      "punishment": "N/A - Procedural section",
+      "applicableTo": ["arrest_procedures", "procedural_requirements"]
+    },
+    {
+      "section": "67",
+      "title": "Stalking",
+      "description": "Following a woman, contacting or attempting to contact her repeatedly despite clear indication of disinterest, monitoring her internet, email or any other electronic communication.",
+      "plainLanguage": "Applies when someone repeatedly follows, contacts, or monitors a woman's activities (including online) despite her clearly showing disinterest.",
+      "punishment": "First conviction: Up to 3 years imprisonment and fine; Subsequent conviction: Up to 5 years imprisonment and fine",
+      "applicableTo": ["stalking", "electronic_monitoring", "repeated_unwanted_contact"]
+    },
+    {
+      "section": "70",
+      "title": "Rape",
+      "description": "Sexual penetration with a woman without her consent or against her will.",
+      "plainLanguage": "This section criminalizes non-consensual sexual intercourse with a woman.",
+      "punishment": "Imprisonment between 10 years to life imprisonment and fine",
+      "applicableTo": ["rape", "sexual_assault", "non_consensual_intercourse"]
+    },
+    {
+      "section": "71",
+      "title": "Aggravated forms of rape",
+      "description": "Rape in specific aggravating circumstances like position of authority, during communal violence, on a minor, etc.",
+      "plainLanguage": "Deals with more serious forms of rape, such as when committed by someone in position of authority, on minors, or during riots/communal violence.",
+      "punishment": "Rigorous imprisonment for a term not less than 10 years but which may extend to imprisonment for life and fine",
+      "applicableTo": ["aggravated_rape", "custodial_rape", "gang_rape"]
+    },
+    {
+      "section": "72",
+      "title": "Punishment for causing death or resulting in persistent vegetative state of victim",
+      "description": "When rape results in death or persistent vegetative state of victim.",
+      "plainLanguage": "This applies when a rape victim dies or enters a persistent vegetative state as a result of the crime.",
+      "punishment": "Rigorous imprisonment for a term not less than 20 years but may extend to imprisonment for life or death penalty",
+      "applicableTo": ["rape_resulting_in_death", "grievous_injury"]
+    },
+    {
+      "section": "183",
+      "title": "Victim statement recording",
+      "description": "Procedure for recording statement of sexual assault victims.",
+      "plainLanguage": "Details the proper legal procedure for recording statements from sexual assault victims, including provisions for victim comfort and privacy.",
+      "punishment": "N/A - Procedural section",
+      "applicableTo": ["procedural_requirements", "victim_statements"]
+    }
+  ],
+  "pocso": [
+    {
+      "section": "3",
+      "title": "Penetrative Sexual Assault",
+      "description": "Penetration of penis or any object into the private parts of a child or making a child do so to the offender or any other person.",
+      "plainLanguage": "This section applies when there is any form of penetration (sexual or with objects) involving a child (under 18 years).",
+      "punishment": "Section 4: Imprisonment between 7 to 10 years and fine",
+      "applicableTo": ["child_sexual_assault", "penetrative_assault", "minor_victims"]
+    },
+    {
+      "section": "5",
+      "title": "Aggravated Penetrative Sexual Assault",
+      "description": "Penetrative sexual assault committed by person in position of trust or authority, or resulting in grievous hurt, pregnancy, or when committed on a child below 12 years.",
+      "plainLanguage": "Deals with more serious forms of sexual assault on children, especially when committed by someone in authority (like family member, teacher, police) or causing serious physical or mental harm.",
+      "punishment": "Section 6: Rigorous imprisonment for a term not less than 10 years but which may extend to imprisonment for life and fine",
+      "applicableTo": ["child_sexual_assault", "abuse_of_authority", "child_below_12"]
+    },
+    {
+      "section": "7",
+      "title": "Sexual Assault",
+      "description": "Touching the private parts of a child or making the child touch the private parts of the offender or any other person, with sexual intent.",
+      "plainLanguage": "This covers non-penetrative sexual touching of a child, or making a child touch someone else's private parts.",
+      "punishment": "Section 8: Imprisonment between 3 to 5 years and fine",
+      "applicableTo": ["child_sexual_assault", "sexual_touching", "minor_victims"]
+    },
+    {
+      "section": "11",
+      "title": "Sexual Harassment of Child",
+      "description": "Uttering words, showing objects, or exposing private parts to a child with sexual intent, or repeatedly following, watching or contacting a child.",
+      "plainLanguage": "This section covers verbal harassment, exposure, showing pornography to children, or stalking/monitoring children for sexual purposes.",
+      "punishment": "Section 12: Imprisonment up to 3 years and fine",
+      "applicableTo": ["child_sexual_harassment", "verbal_harassment", "stalking"]
+    },
+    {
+      "section": "14",
+      "title": "Using Child for Pornography",
+      "description": "Using a child in any form of media for the purpose of sexual gratification.",
+      "plainLanguage": "Applies when someone uses children to create pornographic content or involves them in any sexual representation in media.",
+      "punishment": "First conviction: Up to 5 years and fine; Subsequent conviction: Up to 7 years and fine",
+      "applicableTo": ["child_pornography", "exploitation", "sexual_representation"]
+    },
+    {
+      "section": "15",
+      "title": "Storage of Pornographic Material Involving Child",
+      "description": "Storing pornographic material involving a child for commercial purposes.",
+      "plainLanguage": "This section criminalizes the storage of child pornography, especially for distribution or commercial purposes.",
+      "punishment": "Up to 3 years imprisonment or fine or both",
+      "applicableTo": ["child_pornography", "storage_offences", "digital_evidence"]
+    },
+    {
+      "section": "19",
+      "title": "Reporting of Offences",
+      "description": "Mandatory reporting of POCSO offences.",
+      "plainLanguage": "Makes it mandatory for anyone who knows about a sexual offence against a child to report it to the police. Failure to report is punishable.",
+      "punishment": "Imprisonment up to 6 months or fine or both for failure to report",
+      "applicableTo": ["mandatory_reporting", "procedural_requirements"]
+    },
+    {
+      "section": "24",
+      "title": "Recording of Child Statement",
+      "description": "Special provisions for recording statement of a child victim.",
+      "plainLanguage": "Details how statements from child victims should be recorded - by female officers, at home/place comfortable for child, in presence of parents/guardians, without causing distress.",
+      "punishment": "N/A - Procedural section",
+      "applicableTo": ["procedural_requirements", "victim_statements"]
+    },
+    {
+      "section": "26",
+      "title": "Special Court Proceedings",
+      "description": "Special procedures for trial of offences against children.",
+      "plainLanguage": "Outlines child-friendly court procedures including screens/arrangements to prevent child from seeing accused, frequent breaks during testimony, etc.",
+      "punishment": "N/A - Procedural section",
+      "applicableTo": ["procedural_requirements", "court_proceedings"]
+    }
+  ],
+  "it_act": [
+    {
+      "section": "66E",
+      "title": "Violation of Privacy",
+      "description": "Capturing, publishing or transmitting images of a person's private parts without consent.",
+      "plainLanguage": "This section applies when someone takes or shares images of someone's private body parts without their permission.",
+      "punishment": "Imprisonment up to 3 years or fine up to 2 lakh rupees or both",
+      "applicableTo": ["privacy_violation", "unauthorized_images", "digital_offences"]
+    },
+    {
+      "section": "67",
+      "title": "Publishing or transmitting obscene material in electronic form",
+      "description": "Publishing or transmitting obscene material in electronic form.",
+      "plainLanguage": "Applies to publishing or sharing obscene content (text, images, etc.) through digital media including websites, messaging apps, or email.",
+      "punishment": "First conviction: Up to 3 years imprisonment and fine up to 5 lakh rupees; Subsequent conviction: Up to 5 years imprisonment and fine up to 10 lakh rupees",
+      "applicableTo": ["obscene_content", "digital_offences", "cybercrime"]
+    },
+    {
+      "section": "67A",
+      "title": "Publishing or transmitting sexually explicit material",
+      "description": "Publishing or transmitting material containing sexually explicit acts in electronic form.",
+      "plainLanguage": "More specific than Section 67, this focuses specifically on sexually explicit content in digital form.",
+      "punishment": "First conviction: Up to 5 years imprisonment and fine up to 10 lakh rupees; Subsequent conviction: Up to 7 years imprisonment and fine up to 10 lakh rupees",
+      "applicableTo": ["sexually_explicit_content", "digital_offences", "cybercrime"]
+    },
+    {
+      "section": "67B",
+      "title": "Child Pornography",
+      "description": "Publishing or transmitting material depicting children in sexually explicit acts in electronic form.",
+      "plainLanguage": "This section specifically deals with child pornography in digital form, including creating, sharing, browsing, or downloading such content.",
+      "punishment": "First conviction: Up to 5 years imprisonment and fine up to 10 lakh rupees; Subsequent conviction: Up to 7 years imprisonment and fine up to 10 lakh rupees",
+      "applicableTo": ["child_pornography", "digital_offences", "cybercrime"]
+    }
+  ],
+  "importantJudgments": [
+    {
+      "name": "Vishaka Guidelines",
+      "citation": "Vishaka v. State of Rajasthan (1997) 6 SCC 241",
+      "summary": "Established guidelines for workplace sexual harassment cases before specific legislation existed. These guidelines are still relevant for interpreting workplace harassment under BNS.",
+      "keyPoints": [
+        "Employers must provide complaint committees headed by women",
+        "Defined sexual harassment in workplace settings",
+        "Placed responsibility on employers to prevent harassment"
+      ],
+      "applicableTo": ["workplace_harassment", "sexual_harassment"]
+    },
+    {
+      "name": "Independent Thought v. Union of India",
+      "citation": "(2017) 10 SCC 800",
+      "summary": "Clarified that sexual intercourse with a minor wife also constitutes rape, removing the marital exception for child marriages.",
+      "keyPoints": [
+        "Sexual relations with minor wife (15-18 years) is rape",
+        "POCSO overrides personal laws or exceptions",
+        "Recognized children's vulnerability within marriages"
+      ],
+      "applicableTo": ["child_marriage", "rape", "pocso_applicability"]
+    },
+    {
+      "name": "Bharwada Bhoginbhai Hirjibhai v. State of Gujarat",
+      "citation": "AIR 1983 SC 753",
+      "summary": "Established that testimony of sexual assault victims should be given great weight without corroboration if consistent and credible.",
+      "keyPoints": [
+        "Victim testimony alone sufficient for conviction if credible",
+        "No requirement for corroboration in every case",
+        "Minor inconsistencies do not invalidate victim testimony"
+      ],
+      "applicableTo": ["evidence_standards", "victim_testimony", "sexual_assault_cases"]
+    },
+    {
+      "name": "State of Karnataka v. Shantappa Madivalappa",
+      "citation": "1998 SCC (Cri) 662",
+      "summary": "Established guidelines for digital evidence collection and admissibility in sexual offense cases.",
+      "keyPoints": [
+        "Digital evidence must maintain proper chain of custody",
+        "Evidence must be collected by authorized personnel",
+        "Technical authentication of digital evidence required"
+      ],
+      "applicableTo": ["digital_evidence", "cybercrime", "evidence_standards"]
+    },
+    {
+      "name": "State of Punjab v. Gurmit Singh",
+      "citation": "AIR 1996 SC 1393",
+      "summary": "Established guidelines for in-camera trials and victim-friendly courtroom procedures in rape cases.",
+      "keyPoints": [
+        "Proceedings should be conducted in-camera",
+        "Victims should be provided screen/arrangements to not face accused",
+        "Identity of victim should be protected"
+      ],
+      "applicableTo": ["court_proceedings", "victim_protection", "sexual_assault_cases"]
+    }
+  ],
+  "investigationSteps": {
+    "adult_victim": [
+      {
+        "step": "FIR Registration",
+        "details": "Register FIR under appropriate BNS sections, mandatory under Sec 154",
+        "timeline": "Immediately upon complaint",
+        "mandatory": true,
+        "officerResponsible": "Station House Officer",
+        "requiredDocuments": ["Written complaint", "Victim identity proof"]
+      },
+      {
+        "step": "Victim Statement Recording",
+        "details": "Statement to be recorded under Sec 183 BNS by female officer",
+        "timeline": "Within 24 hours of FIR",
+        "mandatory": true,
+        "officerResponsible": "Female Police Officer (not below Sub-Inspector rank)",
+        "requiredDocuments": ["Statement Form", "Audio-video recording equipment"]
+      },
+      {
+        "step": "Medical Examination",
+        "details": "Medical examination by registered medical practitioner",
+        "timeline": "Within 24 hours of complaint",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Medical Examination Form", "Consent Form"]
+      },
+      {
+        "step": "Crime Scene Investigation",
+        "details": "Collection of physical evidence from crime scene",
+        "timeline": "Within 48 hours of FIR",
+        "mandatory": true,
+        "officerResponsible": "Forensic Team and Investigation Officer",
+        "requiredDocuments": ["Scene of Crime Form", "Evidence Collection Bags", "Photographs"]
+      },
+      {
+        "step": "Digital Evidence Collection",
+        "details": "Collection of electronic records, CCTV, mobile data, etc.",
+        "timeline": "Within 72 hours of FIR",
+        "mandatory": false,
+        "officerResponsible": "Cyber Cell or Technical Team",
+        "requiredDocuments": ["Digital Evidence Collection Form", "Chain of Custody Form"]
+      },
+      {
+        "step": "Witness Statements",
+        "details": "Recording statements of witnesses under Sec 161 BNSS",
+        "timeline": "Within 10 days of FIR",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Witness Statement Form"]
+      },
+      {
+        "step": "Arrest of Accused",
+        "details": "Arrest of accused if identified and required",
+        "timeline": "As per investigation",
+        "mandatory": false,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Arrest Memo", "Medical Examination Form for accused"]
+      },
+      {
+        "step": "Collection of Accused Samples",
+        "details": "Collection of DNA, fingerprints and other samples from accused",
+        "timeline": "Within 24 hours of arrest",
+        "mandatory": true,
+        "officerResponsible": "Forensic Team and Medical Officer",
+        "requiredDocuments": ["Sample Collection Form", "Accused Consent Form"]
+      },
+      {
+        "step": "Forensic Analysis",
+        "details": "Sending collected samples for forensic analysis",
+        "timeline": "Within 7 days of collection",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Forensic Request Form", "Chain of Custody Form"]
+      },
+      {
+        "step": "Charge Sheet Filing",
+        "details": "Filing of charge sheet with all evidence and sections",
+        "timeline": "Within 90 days of FIR",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Charge Sheet Form", "Complete Case File"]
+      }
+    ],
+    "child_victim": [
+      {
+        "step": "FIR Registration",
+        "details": "Register FIR under appropriate POCSO and BNS sections, mandatory under POCSO Sec 19",
+        "timeline": "Immediately upon information",
+        "mandatory": true,
+        "officerResponsible": "Station House Officer",
+        "requiredDocuments": ["Written complaint", "Information from any source"]
+      },
+      {
+        "step": "Child Welfare Committee Notification",
+        "details": "Informing CWC about the case and seeking directions",
+        "timeline": "Within 24 hours of FIR",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["CWC Notification Form"]
+      },
+      {
+        "step": "Child Statement Recording",
+        "details": "Statement to be recorded under Sec 24 POCSO by specialized officer",
+        "timeline": "Within 24 hours of FIR",
+        "mandatory": true,
+        "officerResponsible": "Female Police Officer (specially trained)",
+        "requiredDocuments": ["Statement Form", "Audio-video recording equipment"]
+      },
+      {
+        "step": "Child Medical Examination",
+        "details": "Medical examination by specialized medical practitioner",
+        "timeline": "Within 24 hours of complaint",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer and Medical Officer",
+        "requiredDocuments": ["POCSO Medical Examination Form", "Parent/Guardian Consent Form"]
+      },
+      {
+        "step": "Age Verification",
+        "details": "Verification of child's age through documents",
+        "timeline": "Within 3 days of FIR",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Birth Certificate", "School Records", "Medical Age Estimation"]
+      },
+      {
+        "step": "Support Person Assignment",
+        "details": "Assignment of support person/NGO representative",
+        "timeline": "Within 24 hours of FIR",
+        "mandatory": true,
+        "officerResponsible": "Child Welfare Committee",
+        "requiredDocuments": ["Support Person Assignment Form"]
+      },
+      {
+        "step": "Special Court Case Filing",
+        "details": "Filing case with designated Special POCSO Court",
+        "timeline": "Upon completion of investigation",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer and Public Prosecutor",
+        "requiredDocuments": ["Special Court Filing Form"]
+      },
+      {
+        "step": "Victim Compensation Application",
+        "details": "Application for compensation under POCSO Rules",
+        "timeline": "Within 7 days of FIR",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Victim Compensation Form"]
+      }
+    ],
+    "workplace_harassment": [
+      {
+        "step": "FIR Registration",
+        "details": "Register FIR under BNS Section 66",
+        "timeline": "Immediately upon complaint",
+        "mandatory": true,
+        "officerResponsible": "Station House Officer",
+        "requiredDocuments": ["Written complaint", "Victim identity proof"]
+      },
+      {
+        "step": "Internal Committee Notification",
+        "details": "Notifying workplace Internal Committee if exists",
+        "timeline": "Within 3 days of FIR",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["IC Notification Form"]
+      },
+      {
+        "step": "Workplace Evidence Collection",
+        "details": "Collection of email records, CCTV footage, witness statements from workplace",
+        "timeline": "Within 7 days of FIR",
+        "mandatory": true,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Workplace Evidence Collection Form"]
+      },
+      {
+        "step": "Coordination with HR Department",
+        "details": "Collection of employment records, previous complaints if any",
+        "timeline": "Within 10 days of FIR",
+        "mandatory": false,
+        "officerResponsible": "Investigation Officer",
+        "requiredDocuments": ["Employment Records Request Form"]
+      }
+    ],
+    "cybercrimes": [
+      {
+        "step": "FIR Registration",
+        "details": "Register FIR under IT Act and relevant BNS/POCSO sections",
+        "timeline": "Immediately upon complaint",
+        "mandatory": true,
+        "officerResponsible": "Station House Officer",
+        "requiredDocuments": ["Written complaint", "Preliminary digital evidence"]
+      },
+      {
+        "step": "Digital Device Seizure",
+        "details": "Seizure of relevant digital devices from victim and accused if available",
+        "timeline": "Within 24-48 hours of FIR",
+        "mandatory": true,
+        "officerResponsible": "Cyber Cell Officer",
+        "requiredDocuments": ["Device Seizure Form", "Chain of Custody Form"]
+      },
+      {
+        "step": "Preservation Notices",
+        "details": "Sending preservation notices to relevant platforms/ISPs",
+        "timeline": "Within 48 hours of FIR",
+        "mandatory": true,
+        "officerResponsible": "Cyber Cell Officer",
+        "requiredDocuments": ["Preservation Notice Form"]
+      },
+      {
+        "step": "IP Address Tracking",
+        "details": "Tracking IP addresses and digital footprints",
+        "timeline": "Within 7 days of FIR",
+        "mandatory": true,
+        "officerResponsible": "Cyber Cell Technical Team",
+        "requiredDocuments": ["IP Tracking Request Form"]
+      },
+      {
+        "step": "Digital Forensic Analysis",
+        "details": "Analysis of seized devices and digital evidence",
+        "timeline": "Within 15 days of seizure",
+        "mandatory": true,
+        "officerResponsible": "Digital Forensic Expert",
+        "requiredDocuments": ["Digital Forensic Analysis Form", "Hash Value Verification"]
+      },
+      {
+        "step": "CDR Analysis",
+        "details": "Analysis of Call Detail Records if relevant",
+        "timeline": "Within 15 days of FIR",
+        "mandatory": false,
+        "officerResponsible": "Cyber Cell Officer",
+        "requiredDocuments": ["CDR Analysis Request Form"]
+      }
+    ]
+  },
+  "firTemplates": {
+    "pocso": {
+      "title": "FIR Template for POCSO Cases",
+      "sections": [
+        "complainant_details",
+        "victim_details",
+        "incident_details",
+        "accused_details",
+        "witnesses",
+        "evidence_details",
+        "applicable_sections"
+      ],
+      "mandatoryFields": [
+        "victim_age",
+        "victim_name_code",
+        "guardian_details",
+        "place_of_incident",
+        "date_of_incident",
+        "brief_description"
+      ],
+      "sectionHeading": "FIRST INFORMATION REPORT (Under Section 19 of the POCSO Act, 2012 and Section 154 Cr.P.C.)",
+      "standardText": "Information received at Police Station __________ Date: __________ Time: __________\nFIR No.: __________ Date: __________\n\nThis is to report that a cognizable offence under Section(s) __________ of POCSO Act and Section(s) __________ of BNS has been committed against a child (below 18 years of age)."
+    },
+    "rape": {
+      "title": "FIR Template for Rape Cases",
+      "sections": [
+        "complainant_details",
+        "victim_details",
+        "incident_details",
+        "accused_details",
+        "witnesses",
+        "evidence_details",
+        "applicable_sections"
+      ],
+      "mandatoryFields": [
+        "victim_name_code",
+        "victim_age",
+        "place_of_incident",
+        "date_of_incident",
+        "time_of_incident",
+        "brief_description"
+      ],
+      "sectionHeading": "FIRST INFORMATION REPORT (Under Section 154 Cr.P.C.)",
+      "standardText": "Information received at Police Station __________ Date: __________ Time: __________\nFIR No.: __________ Date: __________\n\nThis is to report that a cognizable offence under Section(s) __________ of Bharatiya Nyaya Sanhita has been committed."
+    },
+    "cybercrime": {
+      "title": "FIR Template for Cyber Sexual Offences",
+      "sections": [
+        "complainant_details",
+        "victim_details",
+        "incident_details",
+        "digital_evidence_details",
+        "accused_details",
+        "applicable_sections"
+      ],
+      "mandatoryFields": [
+        "victim_name_code",
+        "victim_age",
+        "platform_used",
+        "nature_of_content",
+        "date_of_incident",
+        "devices_used"
+      ],
+      "sectionHeading": "FIRST INFORMATION REPORT (Under Section 154 Cr.P.C.)",
+      "standardText": "Information received at Police Station __________ Date: __________ Time: __________\nFIR No.: __________ Date: __________\nCyber Crime Cell Reference: __________\n\nThis is to report that a cognizable offence under Section(s) __________ of IT Act and Section(s) __________ of BNS/POCSO has been committed involving digital media/electronic communication."
+    }
+  },
+  "chargeSheetTemplates": {
+    "pocso": {
+      "title": "Charge Sheet Template for POCSO Cases",
+      "sections": [
+        "court_details",
+        "case_details",
+        "investigating_officer",
+        "complainant_details",
+        "victim_details",
+        "accused_details",
+        "witnesses_list",
+        "evidence_list",
+        "statements_recorded",
+        "expert_opinions",
+        "forensic_reports",
+        "charges_framed",
+        "brief_facts"
+      ],
+      "mandatoryDocuments": [
+        "victim_statement",
+        "medical_report",
+        "age_proof",
+        "cwc_report",
+        "forensic_evidence"
+      ],
+      "sectionHeading": "CHARGE SHEET (Under Section 173 Cr.P.C. and Section 31 of POCSO Act)",
+      "standardText": "In the Court of Special Judge (POCSO), __________ District\nFIR No.: __________ Date: __________\nU/Sec: __________\nFinal Report/Charge Sheet No.: __________\n\nI, __________, Investigating Officer, hereby submit this final report/charge sheet against the accused person(s) who has/have committed offence(s) against a child under POCSO Act and BNS."
+    }
+  }
+}

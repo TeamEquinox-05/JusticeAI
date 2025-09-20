@@ -1,107 +1,164 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import ReferenceSourceViewer from './ReferenceSourceViewer'
 
 const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'new' }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [analysisReport, setAnalysisReport] = useState(null)
 
   // Generate analysis report based on form data
-  const generateAnalysisReport = () => {
-    const report = {
-      caseClassification: formData.victimAge && parseInt(formData.victimAge) < 18 ? 'POCSO Act Case' : 'IPC Section 376 Case',
-      complianceScore: 78,
-      completionPercentage: getCompletionPercentage(),
-      missingFields: [],
-      requiredDocuments: [],
-      legalRequirements: [],
-      investigationSteps: [],
-      relatedCases: [
-        'State vs. John Doe - Similar Pattern (2024)',
-        'XYZ vs. ABC - Precedent Case (2023)',
-        'Mumbai HC - Digital Evidence Standards (2023)'
-      ],
-      urgentActions: [],
-      timelineCompliance: 'Partially Compliant',
-      riskAssessment: 'Medium Risk'
+  // Fetch analysis from backend AI instead of using hardcoded data
+  const fetchAnalysisReport = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/analyze-case', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to analyze case');
+      }
+      
+      // Use the AI-generated analysis
+      return {
+        caseClassification: data.analysis.caseType || 'Pending Classification',
+        complianceScore: data.analysis.complianceScore || 0,
+        completionPercentage: getCompletionPercentage(),
+        missingFields: detectMissingFields(),
+        requiredDocuments: extractRequiredDocuments(data.analysis),
+        legalRequirements: extractLegalRequirements(data.analysis),
+        investigationSteps: data.analysis.investigationSteps || [],
+        relatedCases: extractRelatedCases(data.analysis),
+        urgentActions: extractUrgentActions(data.analysis),
+        timelineCompliance: determineTimelineCompliance(data.analysis),
+        riskAssessment: determineRiskAssessment(data.analysis),
+        // Include all original AI analysis data
+        aiAnalysis: data.analysis
+      };
+    } catch (error) {
+      console.error('Error fetching analysis:', error);
+      // Return minimal fallback data if API fails
+      return {
+        caseClassification: 'Analysis Failed',
+        complianceScore: 0,
+        completionPercentage: getCompletionPercentage(),
+        missingFields: detectMissingFields(),
+        requiredDocuments: [],
+        legalRequirements: [],
+        investigationSteps: [],
+        relatedCases: [],
+        urgentActions: [`ERROR: ${error.message}. Please try again.`],
+        timelineCompliance: 'Unknown',
+        riskAssessment: 'Unknown'
+      };
     }
-
-    // Check missing fields
-    if (!formData.caseId) report.missingFields.push('Case ID/FIR Number')
-    if (!formData.caseTitle) report.missingFields.push('Case Title')
-    if (!formData.caseDescription) report.missingFields.push('Detailed Case Description')
-    if (!formData.victimAge) report.missingFields.push('Victim Age (Critical for legal classification)')
-    if (!formData.victimGender) report.missingFields.push('Victim Gender')
-    if (!formData.incidentDate) report.missingFields.push('Incident Date')
-    if (!formData.incidentTime) report.missingFields.push('Incident Time')
-    if (!formData.victimLocation) report.missingFields.push('Incident Location')
-    if (formData.evidenceFiles && formData.evidenceFiles.length === 0) report.missingFields.push('Evidence Files')
-
-    // Set urgent actions based on missing critical fields
-    if (!formData.victimAge) {
-      report.urgentActions.push('CRITICAL: Determine victim age immediately for proper legal classification')
+  }
+  
+  // Helper function to detect missing fields from form data
+  const detectMissingFields = () => {
+    const missingFields = [];
+    const requiredFields = [
+      'caseId', 'caseTitle', 'caseDescription', 
+      'victimAge', 'victimGender', 'incidentDate', 
+      'incidentTime', 'victimLocation'
+    ];
+    
+    requiredFields.forEach(field => {
+      if (!formData[field]) {
+        missingFields.push(field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1'));
+      }
+    });
+    
+    return missingFields;
+  }
+  
+  // Helper functions to extract data from AI analysis
+  const extractRequiredDocuments = (analysis) => {
+    // Extract documents from investigationSteps that involve documentation
+    const documentSteps = analysis.investigationSteps?.filter(step => 
+      step.title.toLowerCase().includes('document') ||
+      step.title.toLowerCase().includes('report') ||
+      step.title.toLowerCase().includes('record') ||
+      step.title.toLowerCase().includes('certificate') ||
+      step.description?.toLowerCase().includes('document') ||
+      step.description?.toLowerCase().includes('collect')
+    ) || [];
+    
+    return documentSteps.map(step => step.title);
+  }
+  
+  const extractLegalRequirements = (analysis) => {
+    // Extract legal requirements from applicable sections and compliance alerts
+    const requirements = [];
+    
+    // From applicable sections
+    if (analysis.applicableSections) {
+      analysis.applicableSections.forEach(section => {
+        requirements.push(`${section.act} ${section.section}: ${section.title}`);
+      });
     }
-    if (!formData.incidentDate) {
-      report.urgentActions.push('URGENT: Document incident date for timeline compliance')
+    
+    // From compliance alerts
+    if (analysis.complianceAlerts) {
+      analysis.complianceAlerts.forEach(alert => {
+        requirements.push(`${alert.title} (${alert.section || 'Procedural Requirement'})`);
+      });
     }
-
-    // Required documents based on case type
-    if (formData.victimAge && parseInt(formData.victimAge) < 18) {
-      report.requiredDocuments = [
-        'Birth Certificate (Age Proof) - MANDATORY',
-        'Medical Examination Report',
-        'FIR Copy',
-        'Victim Statement (Child-friendly recording)',
-        'Child Welfare Committee Report',
-        'School Records (if applicable)',
-        'Guardian Consent Documentation'
-      ]
-      report.legalRequirements = [
-        'POCSO Act compliance mandatory',
-        'Child Welfare Committee involvement required within 24 hours',
-        'Special court proceedings required',
-        'NGO representation mandatory',
-        'Video recording of statement required',
-        'Child-friendly investigation procedures',
-        'No media disclosure of victim identity'
-      ]
-      report.investigationSteps = [
-        'Immediate medical examination (within 24 hours)',
-        'Age verification using birth certificate/school records',
-        'Child Welfare Committee notification',
-        'Special POCSO court case filing',
-        'NGO coordinator assignment',
-        'Forensic evidence collection with child-friendly procedures',
-        'Juvenile Justice Board consultation if accused is minor'
-      ]
-    } else {
-      report.requiredDocuments = [
-        'FIR Copy',
-        'Medical Examination Report',
-        'Victim Statement',
-        'Witness Statements',
-        'Evidence Documentation',
-        'Investigation Report',
-        'Scene of Crime Documentation'
-      ]
-      report.legalRequirements = [
-        'IPC/BNS Section 376 compliance',
-        'Regular court proceedings',
-        'Victim impact statement',
-        'Evidence chain of custody',
-        'Proper documentation of consent/non-consent',
-        'Medical evidence within 72 hours'
-      ]
-      report.investigationSteps = [
-        'Medical examination within 72 hours',
-        'Detailed victim statement recording',
-        'Witness interviews and statements',
-        'Scene reconstruction and evidence collection',
-        'Forensic analysis of physical evidence',
-        'Background verification of accused',
-        'Charge sheet preparation'
-      ]
+    
+    return requirements;
+  }
+  
+  const extractRelatedCases = (analysis) => {
+    // Extract case references from judicial guidance
+    return analysis.judicialGuidance ? 
+      analysis.judicialGuidance.map(guidance => `${guidance.name} - ${guidance.citation || 'Citation not available'}`) : 
+      [];
+  }
+  
+  const extractUrgentActions = (analysis) => {
+    // Extract urgent actions from compliance alerts with high priority
+    const urgentActions = [];
+    
+    if (analysis.complianceAlerts) {
+      analysis.complianceAlerts.forEach(alert => {
+        if (alert.priority === 'critical' || alert.priority === 'high') {
+          urgentActions.push(`${alert.title}: ${alert.description}`);
+        }
+      });
     }
-
-    return report
+    
+    return urgentActions;
+  }
+  
+  const determineTimelineCompliance = (analysis) => {
+    // Determine timeline compliance based on compliance score
+    if (!analysis.complianceScore) return 'Unknown';
+    
+    if (analysis.complianceScore >= 80) return 'Fully Compliant';
+    if (analysis.complianceScore >= 60) return 'Mostly Compliant';
+    if (analysis.complianceScore >= 40) return 'Partially Compliant';
+    return 'Non-Compliant';
+  }
+  
+  const determineRiskAssessment = (analysis) => {
+    // Determine risk based on compliance alerts and score
+    if (!analysis.complianceScore) return 'Unknown Risk';
+    
+    const criticalAlerts = analysis.complianceAlerts?.filter(alert => 
+      alert.priority === 'critical'
+    ).length || 0;
+    
+    if (criticalAlerts > 2 || analysis.complianceScore < 40) return 'High Risk';
+    if (criticalAlerts > 0 || analysis.complianceScore < 70) return 'Medium Risk';
+    return 'Low Risk';
   }
 
   const getCompletionPercentage = () => {
@@ -115,16 +172,23 @@ const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'n
     return Math.round((filledFields.length / fields.length) * 100)
   }
 
-  // Simulate loading and generate report
-  useState(() => {
-    const timer = setTimeout(() => {
-      const report = generateAnalysisReport()
-      setAnalysisReport(report)
-      setIsLoading(false)
-    }, 3000)
-
-    return () => clearTimeout(timer)
-  }, [])
+  // Fetch analysis report from backend AI
+  useEffect(() => {
+    const getAnalysisReport = async () => {
+      try {
+        setIsLoading(true);
+        const report = await fetchAnalysisReport();
+        setAnalysisReport(report);
+      } catch (error) {
+        console.error('Error getting analysis report:', error);
+        // Handle error state if needed
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    getAnalysisReport();
+  }, [formData]); // Re-run when form data changes
 
   if (isLoading) {
     return (
@@ -189,6 +253,9 @@ const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'n
           </div>
         </div>
 
+        {/* Reference Source Viewer - For PDF-driven questions and analysis */}
+        <ReferenceSourceViewer caseData={formData} analysisData={analysisReport} />
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
@@ -279,7 +346,22 @@ const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'n
                     <span className="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-full w-6 h-6 lg:w-7 lg:h-7 flex items-center justify-center text-xs lg:text-sm font-bold flex-shrink-0 mt-0.5">
                       {index + 1}
                     </span>
-                    <span className="text-sm lg:text-base">{step}</span>
+                    <div className="text-sm lg:text-base">
+                      <div className="font-medium">{step.title}</div>
+                      {step.description && <div className="text-xs text-gray-600 mt-1">{step.description}</div>}
+                      <div className="flex items-center mt-1">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                          step.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                          step.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {step.status === 'completed' ? 'Completed' : 
+                           step.status === 'pending' ? 'Pending' : 
+                           step.status}
+                        </span>
+                        {step.timeline && <span className="text-xs text-gray-500 ml-2">{step.timeline}</span>}
+                      </div>
+                    </div>
                   </li>
                 ))}
               </ol>

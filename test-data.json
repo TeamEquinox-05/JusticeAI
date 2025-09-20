@@ -1,0 +1,15 @@
+{
+  "id": "test123",
+  "caseTitle": "Test Sexual Offense Case",
+  "caseDescription": "This is a test case for a sexual offense investigation involving an adult victim.",
+  "victimAge": "25",
+  "victimGender": "Female",
+  "victimLocation": "Delhi",
+  "incidentDate": "2025-09-15",
+  "incidentTime": "22:30",
+  "answers": {
+    "What was the weather condition during the incident?": "Clear",
+    "Were there any witnesses to the incident?": "Yes",
+    "Please provide additional details about the incident": "The incident occurred near a public park. The victim was returning home from work."
+  }
+}

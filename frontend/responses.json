@@ -170,6 +170,721 @@
       },
       "completed": true,
       "completedAt": "2025-09-20T04:18:07.848Z"
+    },
+    {
+      "id": "1758349301140",
+      "submittedAt": "2025-09-20T06:21:41.140Z",
+      "basicInfo": {
+        "caseId": "23",
+        "caseTitle": "sexual offense",
+        "caseDescription": "act occured at night outside office",
+        "victimAge": "34",
+        "victimGender": "female",
+        "victimLocation": "panaji",
+        "incidentDate": "2025-09-11",
+        "incidentTime": "01:50",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "Was a First Information Report (FIR) filed?",
+          "type": "select",
+          "placeholder": "",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "question": "If yes, what is the FIR number?",
+          "type": "text",
+          "placeholder": "Enter FIR number",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Please provide a detailed description of the incident.",
+          "type": "textarea",
+          "placeholder": "Describe the events leading up to, during, and after the alleged assault.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the exact location of the incident outside the office?",
+          "type": "textarea",
+          "placeholder": "Include specific landmarks, street names, etc.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the incident?",
+          "type": "select",
+          "placeholder": "",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "question": "If yes, please provide the contact information of the witness(es).",
+          "type": "textarea",
+          "placeholder": "Name, address, phone number, email",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has the victim received medical attention? If so, please provide details of the medical examination and report.",
+          "type": "textarea",
+          "placeholder": "Include hospital name, date, time, and doctor's name.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Has a copy of the FIR been sent to the District Legal Services Authority?",
+          "type": "select",
+          "placeholder": "",
+          "options": [
+            "Yes",
+            "No",
+            "Pending"
+          ],
+          "required": true
+        }
+      ],
+      "answers": {
+        "0": "No",
+        "1": "no",
+        "2": "friends meeting after office often for party",
+        "3": "patto plaza",
+        "4": "No",
+        "5": "no",
+        "6": "no",
+        "7": "No"
+      },
+      "completed": true,
+      "completedAt": "2025-09-20T06:23:23.896Z"
+    },
+    {
+      "id": "1758351341322",
+      "submittedAt": "2025-09-20T06:55:41.322Z",
+      "basicInfo": {
+        "caseId": "76",
+        "caseTitle": "sexual harrasment",
+        "caseDescription": "sexual harrassment after party",
+        "victimAge": "18",
+        "victimGender": "female",
+        "victimLocation": "Panaji",
+        "incidentDate": "2025-09-18",
+        "incidentTime": "13:25",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What is the full name and contact information of the victim?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Email Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Please describe the incident in detail. Include the names of any witnesses and the nature of the harassment.",
+          "type": "textarea",
+          "placeholder": "Provide a comprehensive account of the events.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the full name and contact information of the alleged perpetrator?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Was the victim medically examined after the incident? If so, please provide details of the medical report and the examining doctor's information.",
+          "type": "textarea",
+          "placeholder": "Include date, time, location of examination and doctor's name and contact information.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the incident? If yes, please provide their full names and contact information.",
+          "type": "textarea",
+          "placeholder": "List all witnesses and their contact details.",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has a First Information Report (FIR) been filed? If yes, please provide the FIR number and date.",
+          "type": "text",
+          "placeholder": "Enter FIR number and date",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What was the exact location of the after-party?",
+          "type": "textarea",
+          "placeholder": "Provide a detailed description of the location including address, building name, etc.",
+          "options": [],
+          "required": true
+        }
+      ],
+      "answers": {},
+      "completed": false
+    },
+    {
+      "id": "1758351396586",
+      "submittedAt": "2025-09-20T06:56:36.586Z",
+      "basicInfo": {
+        "caseId": "76",
+        "caseTitle": "sexual harrasment",
+        "caseDescription": "sexual harrassment after party",
+        "victimAge": "18",
+        "victimGender": "female",
+        "victimLocation": "Panaji",
+        "incidentDate": "2025-09-18",
+        "incidentTime": "13:25",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What is the full name and contact information of the victim?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Please provide a detailed description of the incident, including the actions of the perpetrator and the victim's response.",
+          "type": "textarea",
+          "placeholder": "Describe the events leading up to, during, and after the incident.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the full name and contact information of the alleged perpetrator?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the incident? If so, please provide their full names and contact information.",
+          "type": "textarea",
+          "placeholder": "List witnesses' full names, phone numbers, and addresses.",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has the victim undergone a medical examination? If so, please provide the date, time, and location of the examination, and the name of the examining physician.",
+          "type": "text",
+          "placeholder": "Date, Time, Location, Physician's Name",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the exact location of the after-party where the incident occurred?",
+          "type": "textarea",
+          "placeholder": "Provide a detailed description of the location, including address, landmarks, etc.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Did the victim provide a statement to the police? If so, please provide the date and time of the statement.",
+          "type": "text",
+          "placeholder": "Date and Time of Statement",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Has the alleged perpetrator been apprehended? If so, provide the date, time, and location of apprehension.",
+          "type": "text",
+          "placeholder": "Date, Time, and Location of Apprehension",
+          "options": [],
+          "required": false
+        }
+      ],
+      "answers": {
+        "0": "Sara Chang",
+        "1": "victim tried to resist but perpetrator didnt stop",
+        "2": "Wong Lee",
+        "3": "no",
+        "4": "14 sept 2025, panaji, ajay singh",
+        "5": "outside office",
+        "6": "no",
+        "7": ""
+      },
+      "completed": true,
+      "completedAt": "2025-09-20T06:59:35.335Z"
+    },
+    {
+      "id": "1758351923558",
+      "submittedAt": "2025-09-20T07:05:23.558Z",
+      "basicInfo": {
+        "caseId": "35",
+        "caseTitle": "sexual harassment",
+        "caseDescription": "sexual harassment after office party outside of the office",
+        "victimAge": "18",
+        "victimGender": "female",
+        "victimLocation": "Panaji",
+        "incidentDate": "2025-09-04",
+        "incidentTime": "16:35",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What is the full name and contact information of the victim?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Please provide a detailed description of the events leading up to, during, and after the alleged sexual harassment incident. ",
+          "type": "textarea",
+          "placeholder": "Include the names of any witnesses, the location of the incident, and any specific details the victim can recall",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the incident?",
+          "type": "text",
+          "placeholder": "If yes, provide names and contact information",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "What is the full name and contact information of the alleged perpetrator?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address, Employment Information",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Has the victim received medical attention since the incident? If so, what type of medical attention, location and date of examination?",
+          "type": "textarea",
+          "placeholder": "Include details of medical reports, doctor's names and contact info, dates and locations of examination",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Does the victim have any physical evidence related to the incident (e.g., clothing, photographs)?",
+          "type": "select",
+          "placeholder": "Select the relevant options",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "question": "What is the name and contact information of the victim's parents or guardians?",
+          "type": "text",
+          "placeholder": "Full Names, Phone Numbers, Addresses",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Has a police report been filed? If yes, please provide the report number.",
+          "type": "text",
+          "placeholder": "Police Report Number",
+          "options": [],
+          "required": false
+        }
+      ],
+      "answers": {
+        "0": "Sara Chang",
+        "1": "after office party",
+        "2": "no",
+        "3": "Wong Li",
+        "4": "no",
+        "5": "Yes",
+        "6": "Harshal",
+        "7": "no"
+      },
+      "completed": true,
+      "completedAt": "2025-09-20T07:07:00.446Z"
+    },
+    {
+      "id": "1758353728705",
+      "submittedAt": "2025-09-20T07:35:28.705Z",
+      "basicInfo": {
+        "caseId": "45",
+        "caseTitle": "Alleged Sexual Assault at Park View Apartments ",
+        "caseDescription": "The victim reports being sexually assaulted by an acquaintance after a social gathering at Park View Apartments. The incident occurred in the parking area of the apartment complex. The victim states she was returning to her vehicle when the accused approached her, initiated an unwanted conversation, and then forcibly assaulted her. The victim managed to escape and immediately contacted a friend who brought her to the police station to file a report.",
+        "victimAge": "22",
+        "victimGender": "female",
+        "victimLocation": "Park View Apartments, Block C, Saket, Delhi",
+        "incidentDate": "2025-09-18",
+        "incidentTime": "14:05",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "Was the accused known to the victim prior to the incident?",
+          "type": "select",
+          "placeholder": "",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "question": "Please describe the nature of the unwanted conversation initiated by the accused.",
+          "type": "textarea",
+          "placeholder": "Detail the conversation as accurately as possible.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Did the victim sustain any physical injuries during the assault?",
+          "type": "select",
+          "placeholder": "",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "question": "If yes, please describe the injuries sustained by the victim.",
+          "type": "textarea",
+          "placeholder": "Specify the type, location, and severity of injuries.",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Were there any witnesses to the assault?",
+          "type": "select",
+          "placeholder": "",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "question": "If yes, please provide the contact details of the witnesses.",
+          "type": "textarea",
+          "placeholder": "Include names, addresses, and phone numbers of witnesses.",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "What was the accused wearing at the time of the incident?",
+          "type": "textarea",
+          "placeholder": "Provide a detailed description of the accused's clothing.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the name and contact information of the friend who accompanied the victim to the police station?",
+          "type": "textarea",
+          "placeholder": "Include name, address, and phone number.",
+          "options": [],
+          "required": true
+        }
+      ],
+      "answers": {},
+      "completed": false,
+      "analysis": {
+        "documents": {
+          "fir": {
+            "content": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No.:** [To be filled by the police station]\n\n**Date of FIR:** 2025-09-18\n\n**Time of FIR:** [Time of registration of FIR]\n\n**Police Station:** [Name of Police Station, Saket, Delhi]\n\n**District:** South, Delhi\n\n**1.  Informant Details:**\n\n*   Name: [Name of the friend who accompanied the victim to the police station – if the victim herself cannot provide this information immediately due to trauma, this section can be filled later after verifying the details]\n*   Address: [Address of the friend]\n*   Contact Number: [Contact number of the friend]\n*   Relationship with the victim: [Friend]\n\n**2. Complainant/Victim Details:**\n\n*   Name: [To be filled after verification – maintain confidentiality]\n*   Age: 22 years\n*   Address: Park View Apartments, Block C, Saket, Delhi\n*   Occupation: [To be filled after verification – maintain confidentiality]\n*   Contact Number: [To be filled after verification – maintain confidentiality]\n\n**3.  Details of the Offense:**\n\n*   Date of Occurrence: 2025-09-18\n*   Time of Occurrence: 14:05 hours\n*   Place of Occurrence: Parking area, Park View Apartments, Block C, Saket, Delhi\n*   Nature of Offense: Sexual Assault\n*   Brief Description: The complainant, a 22-year-old female resident of Park View Apartments, Block C, Saket, Delhi, reports that she was sexually assaulted by an acquaintance in the parking area of the apartment complex at approximately 14:05 hours on 18th September 2025.  The complainant states she was returning to her vehicle after a social gathering at the apartments when the accused approached her, initiated an unwanted conversation, and subsequently forcibly assaulted her.  The complainant managed to escape and immediately contacted a friend, who then accompanied her to the police station to file this report.  Further details regarding the accused are currently unavailable, but are under investigation. [Investigating officer will add details of the accused once available along with any eyewitness accounts if any]\n*   **Sections of Law Applicable:**  [Sections to be added by the Investigating Officer based on detailed investigation.  Sections under the Indian Penal Code (IPC) related to sexual assault are likely to be invoked, potentially including but not limited to Section 376 (Rape), Section 354 (Assault or criminal force to woman with intent to outrage her modesty), and others depending on the specifics of the assault.]\n\n**4.  Evidence:**\n\n*   [To be filled by the Investigating Officer after collecting evidence.  This may include statements from witnesses, medical examination reports of the victim, forensic evidence collected from the scene of crime, etc. ]\n\n**5.  Action Taken:**\n\n*   [To be filled by the Investigating Officer, detailing the actions taken after receiving the complaint including but not limited to recording the victim's statement, sending a copy to the Magistrate (Section 176 CrPC),  informing the concerned DCP, informing the Delhi Commission for Women (DCW), medical examination of the victim, etc.  This section will also document the investigation process and steps taken to apprehend the accused.]\n\n**6.  Investigating Officer:**\n\n*   Name: [To be filled by the concerned officer]\n*   Rank: [To be filled by the concerned officer]\n*   Signature: [To be filled by the concerned officer]\n*   Contact Number: [To be filled by the concerned officer]\n\n\n**Note:** This FIR is a preliminary report.  Further investigations are underway to ascertain the full details of the incident, identify and apprehend the accused, and gather further evidence.  The information provided in this FIR is based on the initial complaint received.  The complainant's statement will be recorded in detail during the course of the investigation, ensuring her safety and dignity are maintained throughout the process.  The identity of the victim will be kept confidential in accordance with legal procedures and guidelines.\n",
+            "generatedAt": "2025-09-20T07:42:25.120Z",
+            "updatedAt": "2025-09-20T07:42:25.121Z"
+          }
+        },
+        "firDraft": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No.:** [To be filled by the police station]\n\n**Date of FIR:** 2025-09-18\n\n**Time of FIR:** [Time of registration of FIR]\n\n**Police Station:** [Name of Police Station, Saket, Delhi]\n\n**District:** South, Delhi\n\n**1.  Informant Details:**\n\n*   Name: [Name of the friend who accompanied the victim to the police station – if the victim herself cannot provide this information immediately due to trauma, this section can be filled later after verifying the details]\n*   Address: [Address of the friend]\n*   Contact Number: [Contact number of the friend]\n*   Relationship with the victim: [Friend]\n\n**2. Complainant/Victim Details:**\n\n*   Name: [To be filled after verification – maintain confidentiality]\n*   Age: 22 years\n*   Address: Park View Apartments, Block C, Saket, Delhi\n*   Occupation: [To be filled after verification – maintain confidentiality]\n*   Contact Number: [To be filled after verification – maintain confidentiality]\n\n**3.  Details of the Offense:**\n\n*   Date of Occurrence: 2025-09-18\n*   Time of Occurrence: 14:05 hours\n*   Place of Occurrence: Parking area, Park View Apartments, Block C, Saket, Delhi\n*   Nature of Offense: Sexual Assault\n*   Brief Description: The complainant, a 22-year-old female resident of Park View Apartments, Block C, Saket, Delhi, reports that she was sexually assaulted by an acquaintance in the parking area of the apartment complex at approximately 14:05 hours on 18th September 2025.  The complainant states she was returning to her vehicle after a social gathering at the apartments when the accused approached her, initiated an unwanted conversation, and subsequently forcibly assaulted her.  The complainant managed to escape and immediately contacted a friend, who then accompanied her to the police station to file this report.  Further details regarding the accused are currently unavailable, but are under investigation. [Investigating officer will add details of the accused once available along with any eyewitness accounts if any]\n*   **Sections of Law Applicable:**  [Sections to be added by the Investigating Officer based on detailed investigation.  Sections under the Indian Penal Code (IPC) related to sexual assault are likely to be invoked, potentially including but not limited to Section 376 (Rape), Section 354 (Assault or criminal force to woman with intent to outrage her modesty), and others depending on the specifics of the assault.]\n\n**4.  Evidence:**\n\n*   [To be filled by the Investigating Officer after collecting evidence.  This may include statements from witnesses, medical examination reports of the victim, forensic evidence collected from the scene of crime, etc. ]\n\n**5.  Action Taken:**\n\n*   [To be filled by the Investigating Officer, detailing the actions taken after receiving the complaint including but not limited to recording the victim's statement, sending a copy to the Magistrate (Section 176 CrPC),  informing the concerned DCP, informing the Delhi Commission for Women (DCW), medical examination of the victim, etc.  This section will also document the investigation process and steps taken to apprehend the accused.]\n\n**6.  Investigating Officer:**\n\n*   Name: [To be filled by the concerned officer]\n*   Rank: [To be filled by the concerned officer]\n*   Signature: [To be filled by the concerned officer]\n*   Contact Number: [To be filled by the concerned officer]\n\n\n**Note:** This FIR is a preliminary report.  Further investigations are underway to ascertain the full details of the incident, identify and apprehend the accused, and gather further evidence.  The information provided in this FIR is based on the initial complaint received.  The complainant's statement will be recorded in detail during the course of the investigation, ensuring her safety and dignity are maintained throughout the process.  The identity of the victim will be kept confidential in accordance with legal procedures and guidelines.\n"
+      }
+    },
+    {
+      "id": "1758355421341",
+      "submittedAt": "2025-09-20T08:03:41.341Z",
+      "basicInfo": {
+        "caseId": "78",
+        "caseTitle": "Alleged Sexual Assault at Park View Apartments",
+        "caseDescription": "In Anita Hill’s testimony against Clarence Thomas, she described a pattern of unwanted and inappropriate conversations in which he repeatedly spoke about sexually explicit topics in the workplace, including graphic descriptions of pornographic films he had watched, remarks about women’s bodies, and references to sexual acts and pornography actors; these conversations were unsolicited, unrelated to work, and created a hostile environment, leaving Hill feeling uncomfortable and intimidated but afraid to speak out due to the power imbalance and fear of retaliation.",
+        "victimAge": "18",
+        "victimGender": "female",
+        "victimLocation": "Panaji goa",
+        "incidentDate": "2025-09-18",
+        "incidentTime": "15:33",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What is the victim's full name?",
+          "type": "text",
+          "placeholder": "Enter victim's full name",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the victim's contact information (phone number and address)?",
+          "type": "text",
+          "placeholder": "Enter victim's contact information",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What are the names and contact details of the victim's parents/guardians?",
+          "type": "textarea",
+          "placeholder": "Enter names, addresses, and phone numbers of parents/guardians",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Please describe the incident in detail. Include all relevant information about the alleged assault.",
+          "type": "textarea",
+          "placeholder": "Describe the incident in detail",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the alleged assault?",
+          "type": "text",
+          "placeholder": "Enter names and contact information of any witnesses",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has the victim undergone a medical examination? If so, when and where?",
+          "type": "textarea",
+          "placeholder": "Provide details of medical examination, including date, time, and location",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Was there any physical evidence collected at the scene? If so, what?",
+          "type": "textarea",
+          "placeholder": "Describe any collected physical evidence",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "What is the exact location within Park View Apartments where the alleged assault took place?",
+          "type": "textarea",
+          "placeholder": "Be as specific as possible (apartment number, building, etc.)",
+          "options": [],
+          "required": true
+        }
+      ],
+      "answers": {},
+      "completed": false,
+      "analysis": {
+        "documents": {
+          "fir": {
+            "content": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No.:** [To be filled by the Police Station]\n\n**Date of FIR:** [Date of filing the FIR]\n\n**Time of FIR:** [Time of filing the FIR]\n\n**Police Station:** [Name of Police Station, Panaji, Goa]\n\n**District:** North Goa\n\n**State:** Goa\n\n\n**1. Information Received from:**  [Name of the Complainant, if different from the victim.  If the victim filed the FIR herself, write \"The Victim\"]\n\n\n**2. Date and Time of Occurrence:** 18th September, 2025, 15:33 hours\n\n\n**3. Place of Occurrence:** Park View Apartments, Panaji, Goa  [Specific address within Park View Apartments should be added if available]\n\n\n**4. Name of the Complainant/Victim:** [Victim's Name] (To be redacted in public records. Use a pseudonym if necessary)\n\n\n**5. Age, Sex, and Occupation of the Complainant/Victim:** 18 years, Female, [Victim's Occupation, if any]\n\n\n**6. Name(s), Age(s), and Address(es) of the Accused:**  [Unknown at this time.  To be investigated and filled in later.  If any suspects are identified, list them here with details. Note any witnesses.]\n\n\n**7. Brief Description of the Occurrence:**  The complainant alleges a pattern of unwanted and inappropriate conversations of a sexually explicit nature on September 18th, 2025.  The conversations included graphic descriptions of pornographic films, remarks about women's bodies, and references to sexual acts and pornography actors.  These conversations were unsolicited, unrelated to any context, and created a hostile environment leaving the complainant feeling uncomfortable and intimidated.  [Further details of the nature of the assault and the environment will need to be added based on the victim's statement and investigation.  The exact nature of the \"sexual assault\" needs to be clarified based on the victim's statement.  This section must accurately reflect the victim's account without embellishment or interpretation.]\n\n\n**8. Specific Offences(s) alleged:** [Mention the relevant sections of the Indian Penal Code (IPC) and/or the Protection of Children from Sexual Offences Act (POCSO) Act, 2012, based on the victim's statement and the nature of the alleged offense. Examples might include but are not limited to: Section 354 (Assault or criminal force to woman with intent to outrage her modesty), Section 354A (Sexual harassment), Section 354B (Assault or use of criminal force to woman with intent to disrobe), Section 509 (Word, gesture, or act intended to insult the modesty of a woman). If the victim is a minor, relevant sections of POCSO Act will apply.  This section must be amended based on the victim's full statement.  Consult legal counsel to determine the appropriate sections].\n\n\n**9. Details of the Witnesses (if any):** [Names and addresses of witnesses, if any. This section can be left blank if there are no witnesses at this time.]\n\n\n**10. Value of Property involved (if any):** [Not applicable in this case]\n\n\n**11. Inquest Report/Post-mortem examination report (if any):** [To be filled after the medical examination]\n\n\n**12. Recovery (if any):** [To be filled after the investigation]\n\n\n**13. Action Taken:** FIR registered. Investigation commenced.  [Victim offered medical assistance and counseling, if applicable.  A copy of the FIR provided to the complainant, and a copy sent to the District Legal Services Authority as per guidelines. Further details of immediate actions taken should be recorded here.]\n\n\n**14. Signature/Thumb Impression of the Complainant:** [Space for signature/thumb impression]\n\n\n**15. Signature of the Investigating Officer (IO):** [Space for IO's signature and designation]\n\n\n**16. Name and Designation of the Officer recording the FIR:** [Name and designation]\n\n\n**17. Remarks:** [Any additional remarks relevant to the case.]\n\n\n**Note:** This FIR is a template and needs to be completed with accurate information obtained through a thorough investigation and the victim's statement.  The sections regarding applicable legal offences, witness details, medical reports and recovery require further investigation before completion. The victim's identity must be protected in accordance with the law.  This is a draft and should not be considered a legal substitute for advice from a legal professional.\n",
+            "generatedAt": "2025-09-20T08:05:04.479Z",
+            "updatedAt": "2025-09-20T08:05:04.479Z"
+          }
+        },
+        "firDraft": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No.:** [To be filled by the Police Station]\n\n**Date of FIR:** [Date of filing the FIR]\n\n**Time of FIR:** [Time of filing the FIR]\n\n**Police Station:** [Name of Police Station, Panaji, Goa]\n\n**District:** North Goa\n\n**State:** Goa\n\n\n**1. Information Received from:**  [Name of the Complainant, if different from the victim.  If the victim filed the FIR herself, write \"The Victim\"]\n\n\n**2. Date and Time of Occurrence:** 18th September, 2025, 15:33 hours\n\n\n**3. Place of Occurrence:** Park View Apartments, Panaji, Goa  [Specific address within Park View Apartments should be added if available]\n\n\n**4. Name of the Complainant/Victim:** [Victim's Name] (To be redacted in public records. Use a pseudonym if necessary)\n\n\n**5. Age, Sex, and Occupation of the Complainant/Victim:** 18 years, Female, [Victim's Occupation, if any]\n\n\n**6. Name(s), Age(s), and Address(es) of the Accused:**  [Unknown at this time.  To be investigated and filled in later.  If any suspects are identified, list them here with details. Note any witnesses.]\n\n\n**7. Brief Description of the Occurrence:**  The complainant alleges a pattern of unwanted and inappropriate conversations of a sexually explicit nature on September 18th, 2025.  The conversations included graphic descriptions of pornographic films, remarks about women's bodies, and references to sexual acts and pornography actors.  These conversations were unsolicited, unrelated to any context, and created a hostile environment leaving the complainant feeling uncomfortable and intimidated.  [Further details of the nature of the assault and the environment will need to be added based on the victim's statement and investigation.  The exact nature of the \"sexual assault\" needs to be clarified based on the victim's statement.  This section must accurately reflect the victim's account without embellishment or interpretation.]\n\n\n**8. Specific Offences(s) alleged:** [Mention the relevant sections of the Indian Penal Code (IPC) and/or the Protection of Children from Sexual Offences Act (POCSO) Act, 2012, based on the victim's statement and the nature of the alleged offense. Examples might include but are not limited to: Section 354 (Assault or criminal force to woman with intent to outrage her modesty), Section 354A (Sexual harassment), Section 354B (Assault or use of criminal force to woman with intent to disrobe), Section 509 (Word, gesture, or act intended to insult the modesty of a woman). If the victim is a minor, relevant sections of POCSO Act will apply.  This section must be amended based on the victim's full statement.  Consult legal counsel to determine the appropriate sections].\n\n\n**9. Details of the Witnesses (if any):** [Names and addresses of witnesses, if any. This section can be left blank if there are no witnesses at this time.]\n\n\n**10. Value of Property involved (if any):** [Not applicable in this case]\n\n\n**11. Inquest Report/Post-mortem examination report (if any):** [To be filled after the medical examination]\n\n\n**12. Recovery (if any):** [To be filled after the investigation]\n\n\n**13. Action Taken:** FIR registered. Investigation commenced.  [Victim offered medical assistance and counseling, if applicable.  A copy of the FIR provided to the complainant, and a copy sent to the District Legal Services Authority as per guidelines. Further details of immediate actions taken should be recorded here.]\n\n\n**14. Signature/Thumb Impression of the Complainant:** [Space for signature/thumb impression]\n\n\n**15. Signature of the Investigating Officer (IO):** [Space for IO's signature and designation]\n\n\n**16. Name and Designation of the Officer recording the FIR:** [Name and designation]\n\n\n**17. Remarks:** [Any additional remarks relevant to the case.]\n\n\n**Note:** This FIR is a template and needs to be completed with accurate information obtained through a thorough investigation and the victim's statement.  The sections regarding applicable legal offences, witness details, medical reports and recovery require further investigation before completion. The victim's identity must be protected in accordance with the law.  This is a draft and should not be considered a legal substitute for advice from a legal professional.\n"
+      }
+    },
+    {
+      "id": "1758355506993",
+      "submittedAt": "2025-09-20T08:05:06.993Z",
+      "basicInfo": {
+        "caseId": "78",
+        "caseTitle": "Alleged Sexual Assault at Park View Apartments",
+        "caseDescription": "In Anita Hill’s testimony against Clarence Thomas, she described a pattern of unwanted and inappropriate conversations in which he repeatedly spoke about sexually explicit topics in the workplace, including graphic descriptions of pornographic films he had watched, remarks about women’s bodies, and references to sexual acts and pornography actors; these conversations were unsolicited, unrelated to work, and created a hostile environment, leaving Hill feeling uncomfortable and intimidated but afraid to speak out due to the power imbalance and fear of retaliation.",
+        "victimAge": "18",
+        "victimGender": "female",
+        "victimLocation": "Panaji goa",
+        "incidentDate": "2025-09-18",
+        "incidentTime": "15:33",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What is the full name and contact information of the victim?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the full name and contact information of the victim's parents/guardians?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Please provide a detailed description of the alleged assault, including the actions of the perpetrator and the victim's response.",
+          "type": "textarea",
+          "placeholder": "Be as specific and detailed as possible.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the incident? If so, please provide their full names and contact information.",
+          "type": "textarea",
+          "placeholder": "Include as much detail as possible about each witness.",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has the victim undergone a medical examination? If so, please provide details of the examination and the name of the medical professional who conducted it.",
+          "type": "text",
+          "placeholder": "Hospital Name, Doctor's Name, Date of Examination",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Was a videography of the victim's statement conducted? If so, please provide details.",
+          "type": "text",
+          "placeholder": "Date, Time, Location of Videography and any relevant information",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What is the name and contact information of the investigating officer?",
+          "type": "text",
+          "placeholder": "Full Name, Rank, Phone Number, Badge Number",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Has a bond for the victim's presence before the court been executed?",
+          "type": "select",
+          "placeholder": "Select Bond Status",
+          "options": [
+            "Yes",
+            "No",
+            "Pending"
+          ],
+          "required": true
+        }
+      ],
+      "answers": {},
+      "completed": false,
+      "analysis": {
+        "documents": {
+          "fir": {
+            "content": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No.:** [Insert FIR Number Here]\n**Police Station:** [Insert Police Station Name and Location, Panaji, Goa]\n**Date of FIR:** [Date of filing the FIR]\n**Time of FIR:** [Time of filing the FIR]\n\n\n**1. Information Received By:** [Name and Designation of Police Officer receiving the complaint]\n\n**2. Date and Time of Occurrence:** 18th September, 2025, 15:33 hours\n\n**3. Place of Occurrence:** Park View Apartments, Panaji, Goa.  [Provide specific address if available]\n\n**4. Complainant/Informant:**\n\n* Name: [Name of the Victim –  To be redacted in the public version of the FIR]\n* Age: 18 years\n* Address: [Address of the victim – To be redacted in the public version of the FIR]\n* Contact Number: [Contact Number of the victim – To be redacted in the public version of the FIR]\n* Relationship to the victim: [N/A if the victim is the complainant]\n\n**5. Details of the Offense:**\n\nThe complainant, an 18-year-old female, alleges a pattern of unwanted and inappropriate conversations of a sexually explicit nature.  The accused [Name of Accused -  if known, otherwise state \"Unknown\"] engaged in unsolicited conversations containing graphic descriptions of pornographic films, remarks about women’s bodies, and references to sexual acts and pornography actors. These conversations took place at Park View Apartments [mention specific location within the apartment complex if possible] and created a hostile environment, causing the complainant to feel uncomfortable and intimidated.   Further details of the nature and extent of the harassment will be ascertained during the investigation.  The specific legal sections applicable will be determined based on the findings of the investigation.  [Note: At this stage, the exact nature of the offence cannot be definitively stated.  The investigation will determine whether the facts constitute offenses under Sections 354, 354A, 354B, 354C, 354D of the Indian Penal Code, 1860, or other relevant sections].\n\n**6. Witnesses:**  [List names and addresses of any witnesses, if available.  To be redacted in the public version of the FIR where appropriate to protect witnesses. If no witnesses are available, state \"None known at this time.\"]\n\n**7. Property Stolen/Damaged:**  [N/A in this case]\n\n**8. Action Taken:**\n\n* The complainant's statement has been recorded.\n* The scene of the crime [if applicable and accessible] will be inspected.\n* An investigation will be launched into the allegations.\n* Medical examination of the complainant will be conducted.\n\n**9. Investigating Officer:** [Name and Designation of the Investigating Officer]\n\n**10. Signature of Complainant/Informant:** [Signature – Only if Victim is Complainant]\n\n**11. Signature of the Receiving Officer:**  [Signature and seal of the Officer receiving the complaint]\n\n\n**Note:** This FIR is a preliminary report based on the information currently available. The investigation will continue to gather further evidence and may lead to amendments or additions to this report.  The identity of the victim will be protected to the maximum extent possible under the law.  A copy of this FIR has been provided to the complainant.  A copy will also be forwarded to the District Legal Services Authority as per the relevant guidelines.\n\n\nThis FIR is prepared as per the guidelines laid down by the [relevant Indian Police Force] and incorporates details required for effective investigation and prosecution.  All actions will be taken in accordance with the relevant provisions of law, including the Protection of Children from Sexual Offences (POCSO) Act, 2012, if applicable after full investigation.\n",
+            "generatedAt": "2025-09-20T08:06:31.337Z",
+            "updatedAt": "2025-09-20T08:06:31.337Z"
+          }
+        },
+        "firDraft": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No.:** [Insert FIR Number Here]\n**Police Station:** [Insert Police Station Name and Location, Panaji, Goa]\n**Date of FIR:** [Date of filing the FIR]\n**Time of FIR:** [Time of filing the FIR]\n\n\n**1. Information Received By:** [Name and Designation of Police Officer receiving the complaint]\n\n**2. Date and Time of Occurrence:** 18th September, 2025, 15:33 hours\n\n**3. Place of Occurrence:** Park View Apartments, Panaji, Goa.  [Provide specific address if available]\n\n**4. Complainant/Informant:**\n\n* Name: [Name of the Victim –  To be redacted in the public version of the FIR]\n* Age: 18 years\n* Address: [Address of the victim – To be redacted in the public version of the FIR]\n* Contact Number: [Contact Number of the victim – To be redacted in the public version of the FIR]\n* Relationship to the victim: [N/A if the victim is the complainant]\n\n**5. Details of the Offense:**\n\nThe complainant, an 18-year-old female, alleges a pattern of unwanted and inappropriate conversations of a sexually explicit nature.  The accused [Name of Accused -  if known, otherwise state \"Unknown\"] engaged in unsolicited conversations containing graphic descriptions of pornographic films, remarks about women’s bodies, and references to sexual acts and pornography actors. These conversations took place at Park View Apartments [mention specific location within the apartment complex if possible] and created a hostile environment, causing the complainant to feel uncomfortable and intimidated.   Further details of the nature and extent of the harassment will be ascertained during the investigation.  The specific legal sections applicable will be determined based on the findings of the investigation.  [Note: At this stage, the exact nature of the offence cannot be definitively stated.  The investigation will determine whether the facts constitute offenses under Sections 354, 354A, 354B, 354C, 354D of the Indian Penal Code, 1860, or other relevant sections].\n\n**6. Witnesses:**  [List names and addresses of any witnesses, if available.  To be redacted in the public version of the FIR where appropriate to protect witnesses. If no witnesses are available, state \"None known at this time.\"]\n\n**7. Property Stolen/Damaged:**  [N/A in this case]\n\n**8. Action Taken:**\n\n* The complainant's statement has been recorded.\n* The scene of the crime [if applicable and accessible] will be inspected.\n* An investigation will be launched into the allegations.\n* Medical examination of the complainant will be conducted.\n\n**9. Investigating Officer:** [Name and Designation of the Investigating Officer]\n\n**10. Signature of Complainant/Informant:** [Signature – Only if Victim is Complainant]\n\n**11. Signature of the Receiving Officer:**  [Signature and seal of the Officer receiving the complaint]\n\n\n**Note:** This FIR is a preliminary report based on the information currently available. The investigation will continue to gather further evidence and may lead to amendments or additions to this report.  The identity of the victim will be protected to the maximum extent possible under the law.  A copy of this FIR has been provided to the complainant.  A copy will also be forwarded to the District Legal Services Authority as per the relevant guidelines.\n\n\nThis FIR is prepared as per the guidelines laid down by the [relevant Indian Police Force] and incorporates details required for effective investigation and prosecution.  All actions will be taken in accordance with the relevant provisions of law, including the Protection of Children from Sexual Offences (POCSO) Act, 2012, if applicable after full investigation.\n"
+      }
+    },
+    {
+      "id": "1758356453927",
+      "submittedAt": "2025-09-20T08:20:53.927Z",
+      "basicInfo": {
+        "caseId": "78",
+        "caseTitle": "Alleged Sexual Assault at Park View Apartments",
+        "caseDescription": "The victim reports being sexually assaulted by an acquaintance after a social gathering at Park View Apartments. The incident occurred in the parking area of the apartment complex. The victim states she was returning to her vehicle when the accused approached her, initiated an unwanted conversation, and then forcibly assaulted her. The victim managed to escape and immediately contacted a friend who brought her to the police station to file a report.",
+        "victimAge": "32",
+        "victimGender": "female",
+        "victimLocation": "Panaji Goa",
+        "incidentDate": "2025-09-16",
+        "incidentTime": "15:50",
+        "evidenceFiles": [],
+        "previousCaseRef": "",
+        "previousCasePdf": null
+      },
+      "questions": [
+        {
+          "question": "What is the full name and contact information of the accused?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Please describe the nature of the acquaintance between the victim and the accused (e.g., friends, coworkers, neighbors).",
+          "type": "textarea",
+          "placeholder": "Describe the nature and duration of their relationship.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Did the victim sustain any physical injuries during the assault? If so, please describe them.",
+          "type": "textarea",
+          "placeholder": "Detailed description of injuries, including location and severity.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "What was the victim wearing at the time of the incident?",
+          "type": "textarea",
+          "placeholder": "Detailed description of clothing.",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Were there any witnesses to the incident? If so, please provide their names and contact information.",
+          "type": "textarea",
+          "placeholder": "Full Name, Phone Number, Address, Relationship to victim/accused (if any)",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "Has the victim undergone a medical examination? If so, please provide details of the examination and the name of the medical professional who conducted it.",
+          "type": "textarea",
+          "placeholder": "Date of examination, name of hospital/clinic, doctor's name, findings.",
+          "options": [],
+          "required": false
+        },
+        {
+          "question": "What is the full name and contact information of the friend who accompanied the victim to the police station?",
+          "type": "text",
+          "placeholder": "Full Name, Phone Number, Address",
+          "options": [],
+          "required": true
+        },
+        {
+          "question": "Provide details of any other evidence collected at the scene (e.g., DNA samples, clothing, etc.)",
+          "type": "textarea",
+          "placeholder": "Detailed description of any physical evidence",
+          "options": [],
+          "required": false
+        }
+      ],
+      "answers": {
+        "0": "Anita Hill’s",
+        "1": "coworkers",
+        "2": "In Anita Hill’s case, there were no physical injuries, since the allegations involved verbal sexual harassment rather than physical assault. However, the harm she described was psychological and professional in nature: she experienced stress, humiliation, and emotional discomfort from being subjected to repeated unwanted sexual conversations, and she testified that she felt intimidated and powerless due to Clarence Thomas’s position of authority over her. Such harassment, even without physical contact, can cause lasting emotional distress, anxiety, and damage to professional opportunities, which are legally recognized as forms of injury in workplace harassment cases.",
+        "3": "In Anita Hill’s case against Clarence Thomas, the specific clothing worn by the accused at the time of the alleged harassment was never detailed in testimony or official records. The allegations centered on verbal sexual harassment in workplace settings, not on physical incidents where attire might have been relevant. Most reports and transcripts of the hearings focus on the content of the conversations, the power dynamic, and the impact on Hill, rather than describing what Thomas was wearing.",
+        "4": "During the 1991 Senate hearings, Anita Hill was the primary witness, testifying under oath that Clarence Thomas had subjected her to repeated unwanted sexual conversations; her account was supported by witnesses such as her friend Susan Hoerchner, who confirmed Hill told her of the harassment years earlier, and Angela Wright, another former EEOC employee, who reported similar inappropriate behavior by Thomas (though she was not permitted to testify publicly), while Rose Jourdain described Wright’s emotional distress, all of which provided corroboration even as Thomas himself firmly denied the allegations.",
+        "5": "no",
+        "6": "fww",
+        "7": ""
+      },
+      "completed": true,
+      "analysis": {
+        "documents": {
+          "fir": {
+            "content": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No:** [Insert FIR Number Here]\n\n**Date of FIR:** 2025-09-16\n\n**Time of FIR:** [Insert Time of FIR Registration]\n\n**Police Station:** [Insert Police Station Name, Panaji, Goa]\n\n**Reporting Officer:** [Insert Name and Rank of the Officer Recording the FIR]\n\n**1.  Information Received:**\n\nOn 2025-09-16 at approximately 15:50 hours, the undersigned received information regarding a case of alleged sexual assault that occurred at Park View Apartments, Panaji, Goa.  The information was provided by [Victim's Name], a 32-year-old female.\n\n**2.  Details of the Complainant:**\n\n*   Name: [Victim's Name]\n*   Age: 32 years\n*   Address: [Victim's Address]\n*   Occupation: [Victim's Occupation]\n*   Contact Number: [Victim's Contact Number]\n\n**3.  Details of the Offense:**\n\nThe complainant alleges that she was sexually assaulted by an acquaintance, [Accused's Name, if known, otherwise state \"Unknown\"], in the parking area of Park View Apartments, Panaji, Goa, on 2025-09-16 at approximately 15:50 hours.  The complainant stated that she was returning to her vehicle after a social gathering at the apartment complex when the accused approached her.  He initiated an unwanted conversation and subsequently forcibly assaulted her. The complainant managed to escape and immediately contacted a friend who then accompanied her to this police station to file a report.\n\n**4.  Location of Occurrence:**\n\nParking area, Park View Apartments, Panaji, Goa.\n\n**5.  Date and Time of Occurrence:**\n\n2025-09-16, 15:50 hours.\n\n**6.  Nature of Offense:**\n\nSexual Assault under Section [Insert Applicable Section of IPC, likely 376 or relevant sections under POCSO Act if applicable based on further investigation and victim's statement.  Note:  This section requires further investigation to determine the precise legal classification].\n\n**7.  Details of the Accused (if known):**\n\n*   Name: [Accused's Name, if known; otherwise state \"Unknown\"]\n*   Age: [Accused's Age, if known; otherwise state \"Unknown\"]\n*   Address: [Accused's Address, if known; otherwise state \"Unknown\"]\n*   Other Identifying Details: [Any other identifying details like physical description, etc., if known.]\n\n\n**8.  Evidence Collected (to be updated during investigation):**\n\n*   [List any evidence collected at the scene or from the victim, such as clothing, medical reports, witness statements, CCTV footage etc. This section will be completed by the Investigating Officer during the course of the investigation.]\n\n**9.  Action Taken:**\n\nA case has been registered under Section [Insert Applicable Section of IPC].  The Investigating Officer ([Insert Name and Rank of IO]) has been assigned to investigate this case. The complainant has been advised to undergo a medical examination. The scene of the crime has been [Describe if the scene has been preserved, photographed, and/or video recorded].   Further investigation is underway.  [Mention if the victim's family has been informed].\n\n\n**10.  Signature of Complainant:** _________________________\n\n**11.  Signature of Reporting Officer:** _________________________\n\n**12.  Witness Signature (if any):** _________________________\n\n\n**Note:** This FIR is a preliminary report.  Further details will be added as the investigation progresses.  This report is subject to updates and modifications as evidence is gathered. The identity of the victim will be protected during the investigation and subsequent proceedings as per legal guidelines.  A copy of this FIR will be provided to the complainant and sent to the appropriate authorities as per standard procedure.\n",
+            "generatedAt": "2025-09-20T08:22:25.363Z",
+            "updatedAt": "2025-09-20T08:22:25.363Z"
+          }
+        },
+        "firDraft": "**First Information Report (FIR)**\n\n**Case Title:** Alleged Sexual Assault at Park View Apartments\n\n**FIR No:** [Insert FIR Number Here]\n\n**Date of FIR:** 2025-09-16\n\n**Time of FIR:** [Insert Time of FIR Registration]\n\n**Police Station:** [Insert Police Station Name, Panaji, Goa]\n\n**Reporting Officer:** [Insert Name and Rank of the Officer Recording the FIR]\n\n**1.  Information Received:**\n\nOn 2025-09-16 at approximately 15:50 hours, the undersigned received information regarding a case of alleged sexual assault that occurred at Park View Apartments, Panaji, Goa.  The information was provided by [Victim's Name], a 32-year-old female.\n\n**2.  Details of the Complainant:**\n\n*   Name: [Victim's Name]\n*   Age: 32 years\n*   Address: [Victim's Address]\n*   Occupation: [Victim's Occupation]\n*   Contact Number: [Victim's Contact Number]\n\n**3.  Details of the Offense:**\n\nThe complainant alleges that she was sexually assaulted by an acquaintance, [Accused's Name, if known, otherwise state \"Unknown\"], in the parking area of Park View Apartments, Panaji, Goa, on 2025-09-16 at approximately 15:50 hours.  The complainant stated that she was returning to her vehicle after a social gathering at the apartment complex when the accused approached her.  He initiated an unwanted conversation and subsequently forcibly assaulted her. The complainant managed to escape and immediately contacted a friend who then accompanied her to this police station to file a report.\n\n**4.  Location of Occurrence:**\n\nParking area, Park View Apartments, Panaji, Goa.\n\n**5.  Date and Time of Occurrence:**\n\n2025-09-16, 15:50 hours.\n\n**6.  Nature of Offense:**\n\nSexual Assault under Section [Insert Applicable Section of IPC, likely 376 or relevant sections under POCSO Act if applicable based on further investigation and victim's statement.  Note:  This section requires further investigation to determine the precise legal classification].\n\n**7.  Details of the Accused (if known):**\n\n*   Name: [Accused's Name, if known; otherwise state \"Unknown\"]\n*   Age: [Accused's Age, if known; otherwise state \"Unknown\"]\n*   Address: [Accused's Address, if known; otherwise state \"Unknown\"]\n*   Other Identifying Details: [Any other identifying details like physical description, etc., if known.]\n\n\n**8.  Evidence Collected (to be updated during investigation):**\n\n*   [List any evidence collected at the scene or from the victim, such as clothing, medical reports, witness statements, CCTV footage etc. This section will be completed by the Investigating Officer during the course of the investigation.]\n\n**9.  Action Taken:**\n\nA case has been registered under Section [Insert Applicable Section of IPC].  The Investigating Officer ([Insert Name and Rank of IO]) has been assigned to investigate this case. The complainant has been advised to undergo a medical examination. The scene of the crime has been [Describe if the scene has been preserved, photographed, and/or video recorded].   Further investigation is underway.  [Mention if the victim's family has been informed].\n\n\n**10.  Signature of Complainant:** _________________________\n\n**11.  Signature of Reporting Officer:** _________________________\n\n**12.  Witness Signature (if any):** _________________________\n\n\n**Note:** This FIR is a preliminary report.  Further details will be added as the investigation progresses.  This report is subject to updates and modifications as evidence is gathered. The identity of the victim will be protected during the investigation and subsequent proceedings as per legal guidelines.  A copy of this FIR will be provided to the complainant and sent to the appropriate authorities as per standard procedure.\n"
+      },
+      "completedAt": "2025-09-20T08:22:30.512Z"
     }
   ]
 }
