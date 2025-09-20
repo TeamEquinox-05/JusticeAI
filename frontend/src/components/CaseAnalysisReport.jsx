@@ -131,7 +131,7 @@ const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'n
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-8 lg:p-12 text-center max-w-md w-full">
           <div className="w-16 h-16 lg:w-20 lg:h-20 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          <h3 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-navy-900 to-blue-700 bg-clip-text text-transparent mb-2">Analyzing Case Details</h3>
+          <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">Analyzing Case Details</h3>
           <p className="text-sm lg:text-base text-gray-600 mb-4">AI is processing your case information and generating compliance report...</p>
           <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full animate-pulse" style={{ width: '75%' }}></div>
@@ -178,7 +178,7 @@ const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'n
           <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 lg:p-8">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
               <div>
-                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-navy-900 to-blue-700 bg-clip-text text-transparent mb-2">Case Analysis Report</h1>
+                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Case Analysis Report</h1>
                 <p className="text-gray-600 text-sm lg:text-base">AI-Generated Legal Compliance Assessment</p>
               </div>
               <div className="text-center">

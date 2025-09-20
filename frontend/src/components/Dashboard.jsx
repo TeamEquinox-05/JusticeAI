@@ -30,7 +30,7 @@ const Dashboard = () => {
                 </svg>
               </div>
               <div>
-                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-navy-900 to-blue-700 bg-clip-text text-transparent">
+                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
                   JusticeAI
                 </h1>
               </div>
