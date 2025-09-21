@@ -90,6 +90,188 @@ const writeResponses = async (data) => {
   }
 };
 
+// Helper function to read cases.json
+const readCasesData = async () => {
+  try {
+    const casesPath = path.join(__dirname, 'cases.json');
+    const data = await fs.readFile(casesPath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading cases.json:', error);
+    return {};
+  }
+};
+
+// Helper function to write cases.json
+const writeCasesData = async (data) => {
+  try {
+    const casesPath = path.join(__dirname, 'cases.json');
+    await fs.writeFile(casesPath, JSON.stringify(data, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error writing cases.json:', error);
+    return false;
+  }
+};
+
+// Function to generate case analysis data in the required format
+const generateCaseAnalysisData = (formData, caseId) => {
+  const isMinorCase = formData.victimAge && parseInt(formData.victimAge) < 18;
+  const caseClassification = isMinorCase ? "POCSO Case" : "IPC Section 376 Case";
+  
+  // Calculate completion percentage and compliance score
+  const requiredFields = ['caseId', 'caseTitle', 'caseDescription', 'victimAge', 'victimGender', 'victimLocation', 'incidentDate'];
+  const filledFields = requiredFields.filter(field => formData[field] && formData[field].trim() !== '');
+  const completionPercentage = Math.round((filledFields.length / requiredFields.length) * 100);
+  const complianceScore = Math.floor(Math.random() * 30) + 70; // Random score between 70-100
+  
+  // Determine missing fields
+  const missingFields = requiredFields.filter(field => !formData[field] || formData[field].trim() === '');
+  
+  // Set required documents based on case type
+  const requiredDocuments = isMinorCase ? [
+    "FIR Copy",
+    "Medical Examination Report",
+    "Victim Statement (Recorded by Magistrate)",
+    "Age Proof of Victim",
+    "Witness Statements",
+    "Evidence Documentation",
+    "Scene of Crime Documentation"
+  ] : [
+    "FIR Copy",
+    "Medical Examination Report",
+    "Victim Statement",
+    "Witness Statements",
+    "Evidence Documentation",
+    "Investigation Report",
+    "Scene of Crime Documentation"
+  ];
+  
+  // Set legal references based on case type
+  const legalReferences = isMinorCase ? [
+    {
+      "title": "POCSO Act Section 4",
+      "description": "Punishment for penetrative sexual assault"
+    },
+    {
+      "title": "POCSO Act Section 29",
+      "description": "Presumption as to certain offences"
+    },
+    {
+      "title": "Juvenile Justice Act, Section 74",
+      "description": "Prohibition on disclosure of identity of children"
+    }
+  ] : [
+    {
+      "title": "BNS Section 376",
+      "description": "Definition of sexual assault and prescribed punishments"
+    },
+    {
+      "title": "Criminal Procedure Code, Section 164A",
+      "description": "Medical examination of victim of rape"
+    },
+    {
+      "title": "Indian Evidence Act, Section 114A",
+      "description": "Presumption as to absence of consent in certain prosecutions for rape"
+    }
+  ];
+  
+  // Set legal requirements based on case type
+  const legalRequirements = isMinorCase ? [
+    "POCSO Act compliance",
+    "Special Court proceedings",
+    "Child-friendly procedures",
+    "Evidence chain of custody",
+    "Mandatory reporting",
+    "Child Welfare Committee involvement"
+  ] : [
+    "IPC/BNS Section 376 compliance",
+    "Regular court proceedings",
+    "Victim impact statement",
+    "Evidence chain of custody",
+    "Proper documentation of consent/non-consent",
+    "Medical evidence within 72 hours"
+  ];
+  
+  // Set investigation steps based on case type
+  const investigationSteps = isMinorCase ? {
+    "Medical examination within 24 hours": { "completed": false },
+    "Statement recording by Magistrate": { "completed": false },
+    "Child Welfare Committee notification": { "completed": false },
+    "Special Court registration": { "completed": false },
+    "Support person assignment": { "completed": false },
+    "Background verification of accused": { "completed": false },
+    "Charge sheet preparation": { "completed": false }
+  } : {
+    "Medical examination within 72 hours": { "completed": false },
+    "Detailed victim statement recording": { "completed": false },
+    "Witness interviews and statements": { "completed": false },
+    "Scene reconstruction and evidence collection": { "completed": false },
+    "Forensic analysis of physical evidence": { "completed": false },
+    "Background verification of accused": { "completed": false },
+    "Charge sheet preparation": { "completed": false }
+  };
+  
+  // Set urgent actions for minor cases
+  const urgentActions = isMinorCase && completionPercentage < 90 ? [
+    "Immediate Child Welfare Committee notification required",
+    "Support person needs to be assigned within 24 hours"
+  ] : [];
+  
+  // Determine timeline compliance
+  const timelineCompliance = completionPercentage >= 90 ? "On Track" : 
+                            completionPercentage >= 70 ? "Partially Complete" : "Delayed";
+  
+  // Risk assessment
+  const riskAssessment = isMinorCase ? "High Risk" : 
+                        completionPercentage < 70 ? "High Risk" : 
+                        completionPercentage < 85 ? "Medium Risk" : "Low Risk";
+  
+  // Generate case analysis report
+  const caseAnalysisReport = `This ${caseClassification} requires ${isMinorCase ? 'immediate attention to' : 'standard processing within statutory timelines. The case has a compliance score of ' + complianceScore + '% and is classified as ' + riskAssessment + ' risk level. Follow the investigation steps carefully and ' + (urgentActions.length > 0 ? 'address the urgent actions immediately.' : 'ensure all required documents are collected.')}`;
+  
+  return {
+    caseId: caseId,
+    caseClassification: caseClassification,
+    complianceScore: complianceScore,
+    completionPercentage: completionPercentage,
+    missingFields: missingFields,
+    requiredDocuments: requiredDocuments,
+    legalReferences: legalReferences,
+    legalRequirements: legalRequirements,
+    investigationSteps: investigationSteps,
+    relatedCases: [
+      "Similar case patterns from database",
+      "Relevant precedent cases",
+      "Recent court decisions"
+    ],
+    urgentActions: urgentActions,
+    timelineCompliance: timelineCompliance,
+    riskAssessment: riskAssessment,
+    caseAnalysisReport: caseAnalysisReport
+  };
+};
+
+// Function to save analyzed case to cases.json
+const saveAnalyzedCase = async (formData, caseId) => {
+  try {
+    const casesData = await readCasesData();
+    const analysisData = generateCaseAnalysisData(formData, caseId);
+    
+    // Add the new case to the cases data
+    casesData[caseId] = analysisData;
+    
+    // Write back to cases.json
+    await writeCasesData(casesData);
+    console.log(`✅ Case ${caseId} saved to cases.json successfully`);
+    
+    return analysisData;
+  } catch (error) {
+    console.error('Error saving analyzed case:', error);
+    throw error;
+  }
+};
+
 // API Routes
 
 // Text extraction endpoint
@@ -317,21 +499,8 @@ app.post('/api/case', async (req, res) => {
         // If form data is provided but no existing caseId, create a new case
         const newCaseId = formData.caseId || Date.now().toString();
         
-        // Start with a template case based on case type (e.g., first case in our JSON)
-        const templateCaseId = Object.keys(cases)[0];
-        const templateCase = cases[templateCaseId];
-        
-        // Create a new case with the form data and template data
-        analysis = {
-          ...templateCase,
-          caseId: newCaseId,
-          // Override any template data with form data
-          // Add more fields here as needed based on the formData structure
-        };
-        
-        // Save the new case to the cases.json file
-        cases[newCaseId] = analysis;
-        await fs.writeFile(casesPath, JSON.stringify(cases, null, 2));
+        // Generate and save new case analysis data
+        analysis = await saveAnalyzedCase(formData, newCaseId);
         
         // Also save to responses.json for backward compatibility
         const responses = await readResponses();
@@ -693,7 +862,7 @@ app.post('/api/case', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'JusticeAI Backend is running',
+    message: 'CaseSwift Backend is running',
     timestamp: new Date().toISOString()
   });
 });
@@ -810,7 +979,7 @@ const startServer = async () => {
   try {
     await initializeResponsesFile();
     app.listen(PORT, () => {
-      console.log(`🚀 JusticeAI Backend server running on port ${PORT}`);
+      console.log(`🚀 CaseSwift Backend server running on port ${PORT}`);
       console.log(`📁 Responses file: ${responsesFilePath}`);
       console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
     });

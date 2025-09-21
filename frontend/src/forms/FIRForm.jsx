@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const FIRForm = () => {
+const FIRForm = ({ initialData = {}, onComplete = () => {}, caseData = {} }) => {
   const [formData, setFormData] = useState({
     form_details: {
       form_name: "FORM-IF1 - (Integrated Form)",
@@ -84,20 +84,55 @@ const FIRForm = () => {
     }
   });
 
-  // Load auto-filled data if available
+  // Load auto-filled data if available or use initialData
   useEffect(() => {
-    const autoFilledData = localStorage.getItem('justiceAI_FIRForm_data');
+    // First try to get auto-filled data from localStorage
+    const autoFilledData = localStorage.getItem('caseSwift_FIRForm_data');
+    
     if (autoFilledData) {
       try {
         const parsedData = JSON.parse(autoFilledData);
         setFormData(parsedData);
         // Clear the localStorage after loading
-        localStorage.removeItem('justiceAI_FIRForm_data');
+        localStorage.removeItem('caseSwift_FIRForm_data');
       } catch (error) {
         console.error('Error loading auto-filled data:', error);
       }
+    } else if (initialData && Object.keys(initialData).length > 0) {
+      // Use initialData to populate the form
+      setFormData(prevData => ({
+        ...prevData,
+        fir_registration: {
+          ...prevData.fir_registration,
+          district: initialData.victimLocation?.split(',')[1]?.trim() || "",
+          fir_no: initialData.caseId || "",
+          date: initialData.incidentDate || ""
+        },
+        timeline_of_events: {
+          ...prevData.timeline_of_events,
+          occurrence_of_offence: {
+            ...prevData.timeline_of_events.occurrence_of_offence,
+            date: initialData.incidentDate || "",
+            time: initialData.incidentTime || ""
+          }
+        },
+        offense_details: {
+          ...prevData.offense_details,
+          acts_and_sections: [
+            { act: "IPC/BNS", sections: "376" },
+            { act: "", sections: "" },
+            { act: "", sections: "" }
+          ]
+        },
+        informant_details: {
+          ...prevData.informant_details,
+          address: initialData.victimLocation || ""
+        },
+        fir_contents: initialData.caseDescription || "",
+        accused_details: initialData.accusedDetails || ""
+      }));
     }
-  }, []);
+  }, [initialData]);
 
   const handleInputChange = (section, field, value, index = null, subField = null) => {
     setFormData(prev => {
@@ -516,7 +551,7 @@ const FIRForm = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Passport No.</label>
                   <input
                     type="text"
-                    value={formData.complainant_informant_details.passport_details.passport_no}
+                    value={formData.complainant_informant_details?.passport_details?.passport_no || ""}
                     onChange={(e) => handleInputChange('complainant_informant_details', 'passport_details', e.target.value, null, 'passport_no')}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Passport number"
@@ -526,7 +561,7 @@ const FIRForm = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Date of Issue</label>
                   <input
                     type="date"
-                    value={formData.complainant_informant_details.passport_details.date_of_issue}
+                    value={formData.complainant_informant_details?.passport_details?.date_of_issue || ""}
                     onChange={(e) => handleInputChange('complainant_informant_details', 'passport_details', e.target.value, null, 'date_of_issue')}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -535,7 +570,7 @@ const FIRForm = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Place of Issue</label>
                   <input
                     type="text"
-                    value={formData.complainant_informant_details.passport_details.place_of_issue}
+                    value={formData.complainant_informant_details?.passport_details?.place_of_issue || ""}
                     onChange={(e) => handleInputChange('complainant_informant_details', 'passport_details', e.target.value, null, 'place_of_issue')}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Place of issue"
@@ -729,12 +764,23 @@ const FIRForm = () => {
           <button
             type="button"
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={() => {
+              // Save to localStorage as draft
+              localStorage.setItem('caseSwift_FIRForm_draft', JSON.stringify(formData));
+              alert('Draft saved successfully!');
+            }}
           >
             Save as Draft
           </button>
           <button
             type="button"
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() => {
+              // Validate required fields here if needed
+              console.log('FIR submitted:', formData);
+              onComplete();
+              alert('FIR submitted successfully!');
+            }}
           >
             Submit FIR
           </button>

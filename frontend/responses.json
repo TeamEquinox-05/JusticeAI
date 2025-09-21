@@ -17,6 +17,21 @@
         "previousCasePdf": null
       },
       "completed": true
+    },
+    {
+      "id": "TEST123",
+      "submittedAt": "2025-09-21T12:16:16.487Z",
+      "basicInfo": {
+        "incidentTime": "14:30",
+        "victimAge": "25",
+        "incidentDate": "2024-01-01",
+        "caseTitle": "Test Case",
+        "victimLocation": "Test City",
+        "caseId": "TEST123",
+        "caseDescription": "Test Description",
+        "victimGender": "Female"
+      },
+      "completed": true
     }
   ]
 }

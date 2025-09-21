@@ -97,7 +97,7 @@ const Sidebar = ({ activeView, setActiveView, sidebarOpen, setSidebarOpen }) => 
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">
-              JusticeAI
+              CaseSwift
             </h2>
           </div>
         </div>

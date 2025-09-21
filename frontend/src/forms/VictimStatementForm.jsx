@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const VictimStatementForm = () => {
+const VictimStatementForm = ({ initialData, onComplete, caseData }) => {
   const [formData, setFormData] = useState({
     document_title: "Victim's Statement Record",
     case_reference: {
@@ -45,18 +45,48 @@ const VictimStatementForm = () => {
 
   // Load auto-filled data if available
   useEffect(() => {
-    const autoFilledData = localStorage.getItem('justiceAI_VictimStatementForm_data');
+    const autoFilledData = localStorage.getItem('caseSwift_VictimStatementForm_data');
     if (autoFilledData) {
       try {
         const parsedData = JSON.parse(autoFilledData);
         setFormData(parsedData);
         // Clear the localStorage after loading
-        localStorage.removeItem('justiceAI_VictimStatementForm_data');
+        localStorage.removeItem('caseSwift_VictimStatementForm_data');
       } catch (error) {
         console.error('Error loading auto-filled data:', error);
       }
     }
   }, []);
+
+  // Auto-populate form with case data
+  useEffect(() => {
+    if (caseData) {
+      setFormData(prev => ({
+        ...prev,
+        case_reference: {
+          fir_no: caseData.firNumber || "",
+          date: caseData.dateTime?.split(' ')[0] || "",
+          police_station: caseData.policeStation || "",
+          district: caseData.district || ""
+        },
+        incident_details: {
+          date: caseData.dateTime?.split(' ')[0] || "",
+          time: caseData.dateTime?.split(' ')[1] || "",
+          location: caseData.location || "",
+          description: caseData.incidentDescription || ""
+        },
+        victim_information: {
+          name: caseData.victimDetails?.name || "",
+          age: caseData.victimDetails?.age || "",
+          gender: caseData.victimDetails?.gender || "",
+          address: caseData.victimDetails?.address || "",
+          guardian_name: caseData.victimDetails?.guardianName || "",
+          guardian_relationship: caseData.victimDetails?.guardianRelationship || "",
+          contact_number: caseData.victimDetails?.contactNumber || ""
+        }
+      }));
+    }
+  }, [caseData]);
 
   const handleInputChange = (section, field, value, index = null, subField = null) => {
     setFormData(prev => {
@@ -470,12 +500,21 @@ const VictimStatementForm = () => {
           <button
             type="button"
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={() => {
+              localStorage.setItem('caseSwift_VictimStatementForm_draft', JSON.stringify(formData));
+              alert('Statement saved as draft');
+            }}
           >
             Save as Draft
           </button>
           <button
             type="button"
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() => {
+              localStorage.setItem('caseSwift_VictimStatementForm_complete', JSON.stringify(formData));
+              if (onComplete) onComplete('VictimStatementForm');
+              alert('Victim statement submitted successfully');
+            }}
           >
             Submit Statement
           </button>

@@ -213,5 +213,75 @@
     "timelineCompliance": "Delayed",
     "riskAssessment": "High Risk",
     "caseAnalysisReport": "This POCSO case requires immediate attention to address missing critical information. The case has a compliance score of 75% and is classified as High Risk. Follow the investigation steps carefully and address the urgent actions immediately."
+  },
+  "TEST123": {
+    "caseId": "TEST123",
+    "caseClassification": "IPC Section 376 Case",
+    "complianceScore": 84,
+    "completionPercentage": 100,
+    "missingFields": [],
+    "requiredDocuments": [
+      "FIR Copy",
+      "Medical Examination Report",
+      "Victim Statement",
+      "Witness Statements",
+      "Evidence Documentation",
+      "Investigation Report",
+      "Scene of Crime Documentation"
+    ],
+    "legalReferences": [
+      {
+        "title": "BNS Section 376",
+        "description": "Definition of sexual assault and prescribed punishments"
+      },
+      {
+        "title": "Criminal Procedure Code, Section 164A",
+        "description": "Medical examination of victim of rape"
+      },
+      {
+        "title": "Indian Evidence Act, Section 114A",
+        "description": "Presumption as to absence of consent in certain prosecutions for rape"
+      }
+    ],
+    "legalRequirements": [
+      "IPC/BNS Section 376 compliance",
+      "Regular court proceedings",
+      "Victim impact statement",
+      "Evidence chain of custody",
+      "Proper documentation of consent/non-consent",
+      "Medical evidence within 72 hours"
+    ],
+    "investigationSteps": {
+      "Medical examination within 72 hours": {
+        "completed": false
+      },
+      "Detailed victim statement recording": {
+        "completed": false
+      },
+      "Witness interviews and statements": {
+        "completed": false
+      },
+      "Scene reconstruction and evidence collection": {
+        "completed": false
+      },
+      "Forensic analysis of physical evidence": {
+        "completed": false
+      },
+      "Background verification of accused": {
+        "completed": false
+      },
+      "Charge sheet preparation": {
+        "completed": false
+      }
+    },
+    "relatedCases": [
+      "Similar case patterns from database",
+      "Relevant precedent cases",
+      "Recent court decisions"
+    ],
+    "urgentActions": [],
+    "timelineCompliance": "On Track",
+    "riskAssessment": "Low Risk",
+    "caseAnalysisReport": "This IPC Section 376 Case requires standard processing within statutory timelines. The case has a compliance score of 84% and is classified as Low Risk risk level. Follow the investigation steps carefully and ensure all required documents are collected."
   }
 }

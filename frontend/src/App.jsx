@@ -152,7 +152,7 @@ function AppContent() {
                   </svg>
                 </div>
                 <h1 className="text-lg font-bold text-gray-900">
-                  JusticeAI
+                  CaseSwift
                 </h1>
               </div>
               <div className="w-10"></div> {/* Spacer for centering */}

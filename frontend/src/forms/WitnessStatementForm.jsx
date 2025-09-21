@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const WitnessStatementForm = () => {
+const WitnessStatementForm = ({ initialData, onComplete, caseData }) => {
   const [formData, setFormData] = useState({
     document_title: "Witness Statement Record",
     case_reference: {
@@ -31,6 +31,27 @@ const WitnessStatementForm = () => {
       identification_details: ""
     }
   });
+
+  // Auto-populate form with case data
+  useEffect(() => {
+    if (caseData) {
+      setFormData(prev => ({
+        ...prev,
+        case_reference: {
+          fir_no: caseData.firNumber || "",
+          date: caseData.dateTime?.split(' ')[0] || "",
+          police_station: caseData.policeStation || "",
+          district: caseData.district || ""
+        },
+        incident_details: {
+          date: caseData.dateTime?.split(' ')[0] || "",
+          time: caseData.dateTime?.split(' ')[1] || "",
+          location: caseData.location || "",
+          brief_description: caseData.incidentDescription || ""
+        }
+      }));
+    }
+  }, [caseData]);
 
   const handleInputChange = (section, field, value) => {
     setFormData(prev => ({
@@ -214,12 +235,21 @@ const WitnessStatementForm = () => {
           <button
             type="button"
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={() => {
+              localStorage.setItem('caseSwift_WitnessStatementForm_draft', JSON.stringify(formData));
+              alert('Statement saved as draft');
+            }}
           >
             Save as Draft
           </button>
           <button
             type="button"
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() => {
+              localStorage.setItem('caseSwift_WitnessStatementForm_complete', JSON.stringify(formData));
+              if (onComplete) onComplete('WitnessStatementForm');
+              alert('Witness statement submitted successfully');
+            }}
           >
             Submit Statement
           </button>

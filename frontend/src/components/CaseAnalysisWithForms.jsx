@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { FormAutoFill } from '../utils/FormAutoFill'
 import ChatModal from './ChatModal'
 
-const CaseAnalysisWithForms = ({ analysisData, originalCaseData, sessionId, caseId, onBack }) => {
+const CaseAnalysisWithForms = ({ analysisData, originalCaseData, sessionId, caseId, onBack, legalProcessSteps, stepsResponse, onContinueToForms }) => {
   const [recommendedForms, setRecommendedForms] = useState([])
   const [showChat, setShowChat] = useState(false)
   const [autoFilledForms, setAutoFilledForms] = useState({})
@@ -46,7 +46,7 @@ const CaseAnalysisWithForms = ({ analysisData, originalCaseData, sessionId, case
     // Store the auto-filled data in localStorage for the form to use
     const formData = autoFilledForms[formType]
     if (formData) {
-      localStorage.setItem(`justiceAI_${formType}_data`, JSON.stringify(formData))
+      localStorage.setItem(`caseSwift_${formType}_data`, JSON.stringify(formData))
       // In a real app, you would navigate to the form component
       alert(`${formType} data has been prepared. The form would open with pre-filled data.`)
     }
@@ -104,7 +104,56 @@ const CaseAnalysisWithForms = ({ analysisData, originalCaseData, sessionId, case
     }
   }
 
+  const parseLegalProcessSteps = (stepsData) => {
+    if (!stepsData) return []
+    
+    try {
+      let content = stepsData
+      
+      // Handle different data types
+      if (typeof stepsData === 'object' && stepsData !== null) {
+        // If it's already an object, extract the content
+        content = stepsData.response || stepsData.content || JSON.stringify(stepsData)
+      } else if (typeof stepsData === 'string') {
+        // For strings, use as-is (don't attempt JSON parsing)
+        content = stepsData
+      } else {
+        // For other types, convert to string
+        content = String(stepsData)
+      }
+      
+      // Ensure content is a string
+      if (typeof content !== 'string') {
+        content = JSON.stringify(content)
+      }
+      
+      // Split by numbered points and clean up
+      const stepLines = content.split(/\d+\.\s/).filter(line => line.trim())
+      
+      return stepLines.map((step, index) => {
+        const cleanStep = step.trim().replace(/^\*\*|\*\*$/g, '').replace(/\*\*/g, '')
+        const [title, ...descParts] = cleanStep.split(':')
+        
+        return {
+          title: title.trim(),
+          description: descParts.join(':').trim() || cleanStep,
+          status: index === 0 ? 'required' : 'pending',
+          forms: [],
+          timeline: 'As needed'
+        }
+      })
+    } catch (error) {
+      console.error('Error parsing legal process steps:', error)
+      return []
+    }
+  }
+
   const analysisSteps = getAnalysisSteps()
+  const legalSteps = parseLegalProcessSteps(legalProcessSteps)
+  
+  // Debug logging
+  console.log('Legal Process Steps Data:', legalProcessSteps)
+  console.log('Parsed Legal Steps:', legalSteps)
 
   return (
     <div className="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
@@ -164,9 +213,11 @@ const CaseAnalysisWithForms = ({ analysisData, originalCaseData, sessionId, case
 
         {/* Analysis Steps */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">Legal Process Steps</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-6">
+            {legalProcessSteps ? 'AI-Generated Legal Process Steps' : 'Legal Process Steps'}
+          </h2>
           <div className="space-y-4">
-            {analysisSteps.map((step, index) => (
+            {(legalSteps.length > 0 ? legalSteps : analysisSteps).map((step, index) => (
               <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
                 <div className="flex justify-between items-start">
                   <div>
@@ -186,43 +237,21 @@ const CaseAnalysisWithForms = ({ analysisData, originalCaseData, sessionId, case
             ))}
           </div>
         </div>
-
-        {/* Recommended Forms */}
+        
+        {/* Continue to Forms Section */}
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">Recommended Forms (Auto-Filled)</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recommendedForms.map((form, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-semibold text-gray-800">{form.name}</h3>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    form.priority === 'high' ? 'bg-red-100 text-red-800' :
-                    form.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-green-100 text-green-800'
-                  }`}>
-                    {form.priority}
-                  </span>
-                </div>
-                <p className="text-gray-600 text-sm mb-4">{form.description}</p>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleOpenForm(form.component)}
-                    className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
-                  >
-                    Open Form
-                  </button>
-                  <button
-                    onClick={() => handleDownloadForm(form.component)}
-                    className="px-3 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors"
-                    title="Download as JSON"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="text-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Ready to Process Forms?</h2>
+            <p className="text-gray-600 mb-6">
+              Continue to the form filling dashboard to complete all required legal documents for this case. 
+              All forms will be pre-populated with the case analysis data.
+            </p>
+            <button
+              onClick={onContinueToForms}
+              className="bg-gradient-to-r from-blue-600 to-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Continue to Form Filling Dashboard
+            </button>
           </div>
         </div>
       </div>

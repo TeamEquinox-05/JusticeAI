@@ -14,7 +14,7 @@ const Dashboard = () => {
   // Fetch case analysis data from backend every time Dashboard loads
   useEffect(() => {
     // Check if there's a case ID in localStorage to fetch
-    const savedCaseId = localStorage.getItem('justiceAI_caseId')
+    const savedCaseId = localStorage.getItem('caseSwift_caseId')
     
     if (savedCaseId) {
       fetchCaseAnalysis(savedCaseId)
@@ -46,8 +46,8 @@ const Dashboard = () => {
     setSelectedOption(null)
     setShowAnalysisReport(false)
     // Clear case data from localStorage when explicitly returning to home
-    localStorage.removeItem('justiceAI_caseAnalysis')
-    localStorage.removeItem('justiceAI_caseId')
+    localStorage.removeItem('caseSwift_caseAnalysis')
+    localStorage.removeItem('caseSwift_caseId')
   }
 
   if (selectedOption === 'new-case') {
@@ -90,7 +90,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-                  JusticeAI
+                  CaseSwift
                 </h1>
               </div>
             </div>

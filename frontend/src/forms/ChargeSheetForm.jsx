@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const ChargeSheetForm = () => {
+const ChargeSheetForm = ({ initialData = {}, onComplete = () => {}, caseData = {} }) => {
   const [formData, setFormData] = useState({
     form_details: {
       form_name: "FORM IF5",
@@ -106,18 +106,31 @@ const ChargeSheetForm = () => {
 
   // Load auto-filled data if available
   useEffect(() => {
-    const autoFilledData = localStorage.getItem('justiceAI_ChargeSheetForm_data');
+    const autoFilledData = localStorage.getItem('caseSwift_ChargeSheetForm_data');
     if (autoFilledData) {
       try {
         const parsedData = JSON.parse(autoFilledData);
         setFormData(parsedData);
         // Clear the localStorage after loading
-        localStorage.removeItem('justiceAI_ChargeSheetForm_data');
+        localStorage.removeItem('caseSwift_ChargeSheetForm_data');
       } catch (error) {
         console.error('Error loading auto-filled data:', error);
       }
+    } else if (initialData && Object.keys(initialData).length > 0) {
+      // Use initialData to populate the form
+      setFormData(prevData => ({
+        ...prevData,
+        case_identification: {
+          ...prevData.case_identification,
+          district: initialData.victimLocation?.split(',')[1]?.trim() || "",
+          fir_no: initialData.caseId || "",
+          fir_date: initialData.incidentDate || ""
+        },
+        investigation_summary: initialData.reportSummary || initialData.caseDescription || "",
+        final_opinion: `Based on the investigation, this ${initialData.caseClassification || 'case'} requires further action.`
+      }));
     }
-  }, []);
+  }, [initialData]);
 
   const handleInputChange = (section, field, value, index = null, subField = null) => {
     setFormData(prev => {
@@ -850,12 +863,21 @@ const ChargeSheetForm = () => {
           <button
             type="button"
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={() => {
+              localStorage.setItem('caseSwift_ChargeSheetForm_draft', JSON.stringify(formData));
+              alert('Draft saved successfully!');
+            }}
           >
             Save as Draft
           </button>
           <button
             type="button"
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() => {
+              console.log('Charge Sheet submitted:', formData);
+              onComplete();
+              alert('Charge Sheet submitted successfully!');
+            }}
           >
             Submit Charge Sheet
           </button>

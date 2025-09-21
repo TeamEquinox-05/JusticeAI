@@ -15,6 +15,77 @@ const ChatModal = ({ isOpen, onClose, sessionId, caseId }) => {
     scrollToBottom()
   }, [messages])
 
+  // Function to clean up the response and extract only the AI's reply
+  const cleanResponse = (rawResponse) => {
+    if (!rawResponse) return 'Sorry, I could not process your request.'
+    
+    // Remove common prefixes and user question echoes
+    let cleanedResponse = rawResponse
+      .replace(/^Here's my response to your question:\s*/i, '')
+      .replace(/^Officer:.*?\n\n/s, '')
+      .replace(/^AI Guide:\s*/i, '')
+      .replace(/^AI:\s*/i, '')
+      .replace(/^Based on the legal context provided.*?\n\n/s, '')
+      .replace(/\s*---\s*$/g, '')
+      .trim()
+    
+    // If the response is empty after cleaning, return a fallback
+    if (!cleanedResponse) {
+      return 'I understand your question. How can I help you with your case?'
+    }
+    
+    return cleanedResponse
+  }
+
+  // Function to format the response for better display
+  const formatResponse = (text) => {
+    if (!text) return text
+    
+    // Split into lines for processing
+    const lines = text.split('\n')
+    const formattedLines = []
+    
+    for (let line of lines) {
+      line = line.trim()
+      if (!line) continue
+      
+      // Handle headers (### or **)
+      if (line.startsWith('###')) {
+        formattedLines.push({
+          type: 'header',
+          content: line.replace(/^###\s*/, '').replace(/\*+$/, '').trim()
+        })
+      }
+      // Handle numbered items
+      else if (/^\d+\.\s*/.test(line)) {
+        const match = line.match(/^(\d+)\.\s*(.*)/)
+        if (match) {
+          formattedLines.push({
+            type: 'numbered',
+            number: match[1],
+            content: match[2].replace(/^\*+/, '').replace(/\*+$/, '').trim()
+          })
+        }
+      }
+      // Handle bullet points or sub-items
+      else if (line.startsWith('*') || line.startsWith('-')) {
+        formattedLines.push({
+          type: 'bullet',
+          content: line.replace(/^[\*\-]\s*/, '').replace(/\*+$/, '').trim()
+        })
+      }
+      // Regular text
+      else {
+        formattedLines.push({
+          type: 'text',
+          content: line
+        })
+      }
+    }
+    
+    return formattedLines
+  }
+
   const sendMessage = async () => {
     if (!inputMessage.trim() || !sessionId) return
 
@@ -32,9 +103,12 @@ const ChatModal = ({ isOpen, onClose, sessionId, caseId }) => {
         case_id: caseId
       })
 
+      const cleanedContent = cleanResponse(response.data.response)
+      const formattedContent = formatResponse(cleanedContent)
       const botMessage = { 
         type: 'bot', 
-        content: response.data.response || 'Sorry, I could not process your request.', 
+        content: cleanedContent,
+        formattedContent: formattedContent,
         timestamp: new Date() 
       }
       setMessages(prev => [...prev, botMessage])
@@ -114,7 +188,38 @@ const ChatModal = ({ isOpen, onClose, sessionId, caseId }) => {
                   ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg' 
                   : 'bg-white/80 text-gray-800 shadow-md border border-gray-200/50'
               }`}>
-                <p className="text-sm leading-relaxed">{message.content}</p>
+                {message.type === 'bot' && message.formattedContent ? (
+                  <div className="text-sm leading-relaxed space-y-2">
+                    {message.formattedContent.map((item, itemIndex) => (
+                      <div key={itemIndex}>
+                        {item.type === 'header' && (
+                          <h4 className="font-bold text-blue-700 text-base mb-2">
+                            {item.content}
+                          </h4>
+                        )}
+                        {item.type === 'numbered' && (
+                          <div className="flex items-start space-x-2 mb-1">
+                            <span className="font-bold text-blue-600 min-w-[20px]">
+                              {item.number}.
+                            </span>
+                            <span className="flex-1">{item.content}</span>
+                          </div>
+                        )}
+                        {item.type === 'bullet' && (
+                          <div className="flex items-start space-x-2 mb-1 ml-4">
+                            <span className="text-blue-500 min-w-[8px] mt-2">•</span>
+                            <span className="flex-1">{item.content}</span>
+                          </div>
+                        )}
+                        {item.type === 'text' && (
+                          <p className="mb-1">{item.content}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm leading-relaxed">{message.content}</p>
+                )}
                 <p className={`text-xs mt-2 ${
                   message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                 }`}>

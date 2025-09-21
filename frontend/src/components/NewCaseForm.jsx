@@ -2,6 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import CaseAnalysisWithForms from './CaseAnalysisWithForms'
 import ChatModal from './ChatModal'
+import FormFillingDashboard from './FormFillingDashboard'
 
 const NewCaseForm = ({ onBack }) => {
   const [formData, setFormData] = useState({
@@ -26,6 +27,9 @@ const NewCaseForm = ({ onBack }) => {
   const [analysisData, setAnalysisData] = useState(null)
   const [showAnalysisReport, setShowAnalysisReport] = useState(false)
   const [showChat, setShowChat] = useState(false)
+  const [stepsResponse, setStepsResponse] = useState(null)
+  const [legalProcessSteps, setLegalProcessSteps] = useState(null)
+  const [showFormDashboard, setShowFormDashboard] = useState(false)
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -46,6 +50,61 @@ const NewCaseForm = ({ onBack }) => {
       ...prev,
       evidenceFiles: prev.evidenceFiles.filter((_, i) => i !== index)
     }))
+  }
+
+  // Function to automatically request investigation steps
+  const requestInvestigationSteps = async (sessionId, caseType) => {
+    try {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      
+      // Determine the appropriate question based on case type
+      let stepsQuestion = '';
+      if (caseType.toLowerCase().includes('rape') || caseType.toLowerCase().includes('sexual')) {
+        if (formData.victimAge && parseInt(formData.victimAge) < 18) {
+          stepsQuestion = 'What evidence should be collected for under age rape case? What steps should the investigating officer take?';
+        } else {
+          stepsQuestion = 'What evidence should be collected for rape case? What steps should the investigating officer take?';
+        }
+      } else {
+        stepsQuestion = 'What are the mandatory investigation steps and evidence collection procedures for this case?';
+      }
+      
+      const stepsResponse = await axios.post(`${apiBaseUrl}/api/chat`, {
+        message: stepsQuestion,
+        session_id: sessionId
+      });
+      
+      if (stepsResponse.data && stepsResponse.data.response) {
+        setStepsResponse({
+          question: stepsQuestion,
+          response: stepsResponse.data.response
+        });
+      }
+    } catch (error) {
+      console.error('Error requesting investigation steps:', error);
+    }
+  }
+
+  // Function to request legal process steps from backend
+  const requestLegalProcessSteps = async (sessionId, caseType) => {
+    try {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      
+      const processStepsQuestion = `What are the legal process steps, timelines, and status for ${caseType}? Please provide the steps in this format: Step Title|Description|Timeline|Status`;
+      
+      const processResponse = await axios.post(`${apiBaseUrl}/api/chat`, {
+        message: processStepsQuestion,
+        session_id: sessionId
+      });
+      
+      if (processResponse.data && processResponse.data.response) {
+        return processResponse.data.response;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error requesting legal process steps:', error);
+      return null;
+    }
   }
 
   const handleSubmitCase = async () => {
@@ -165,9 +224,18 @@ const NewCaseForm = ({ onBack }) => {
         setAnalysisData(mockAnalysisData);
         
         // Store important data in localStorage
-        localStorage.setItem('justiceAI_caseId', formData.caseId);
-        localStorage.setItem('justiceAI_sessionId', sessionId);
-        localStorage.setItem('justiceAI_analysisData', JSON.stringify(mockAnalysisData));
+        localStorage.setItem('caseSwift_caseId', formData.caseId);
+        localStorage.setItem('caseSwift_sessionId', sessionId);
+        localStorage.setItem('caseSwift_analysisData', JSON.stringify(mockAnalysisData));
+        
+        // Automatically request investigation steps
+        await requestInvestigationSteps(sessionId, formData.caseTitle);
+        
+        // Request legal process steps from backend
+        const legalSteps = await requestLegalProcessSteps(sessionId, formData.caseTitle);
+        if (legalSteps) {
+          setLegalProcessSteps(legalSteps);
+        }
         
         // Show success message and display analysis report
         setIsRedirecting(true);
@@ -218,6 +286,17 @@ const NewCaseForm = ({ onBack }) => {
     );
   }
   
+  // If showing form dashboard, render that component  
+  if (showFormDashboard && currentCaseId) {
+    return (
+      <FormFillingDashboard 
+        caseId={currentCaseId}
+        caseData={analysisData}
+        onBack={() => setShowFormDashboard(false)}
+      />
+    );
+  }
+  
   // If showing analysis report, render that component
   if (showAnalysisReport && analysisData) {
     return (
@@ -226,7 +305,10 @@ const NewCaseForm = ({ onBack }) => {
         originalCaseData={formData}
         sessionId={sessionId}
         caseId={currentCaseId}
+        stepsResponse={stepsResponse}
+        legalProcessSteps={legalProcessSteps}
         onBack={onBack}
+        onContinueToForms={() => setShowFormDashboard(true)}
       />
     );
   }
