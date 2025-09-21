@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
-import CaseAnalysisReport from './CaseAnalysisReport'
+import CaseAnalysisWithForms from './CaseAnalysisWithForms'
+import ChatModal from './ChatModal'
 
 const NewCaseForm = ({ onBack }) => {
   const [formData, setFormData] = useState({
@@ -19,10 +20,12 @@ const NewCaseForm = ({ onBack }) => {
 
   const [currentSection, setCurrentSection] = useState(0)
   const [currentCaseId, setCurrentCaseId] = useState(null)
+  const [sessionId, setSessionId] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [analysisData, setAnalysisData] = useState(null)
   const [showAnalysisReport, setShowAnalysisReport] = useState(false)
+  const [showChat, setShowChat] = useState(false)
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -58,23 +61,113 @@ const NewCaseForm = ({ onBack }) => {
     setIsSubmitting(true);
     
     try {
-      // Since we're now using a direct API endpoint for case creation,
-      // we can skip the submit-case endpoint and directly use the case endpoint
-      const response = await axios.post('http://localhost:3001/api/case', { 
-        formData: formData 
+      // Use the environment variable for the API base URL
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      
+      // Send the case data to the server endpoint in the expected format
+      const response = await axios.post(`${apiBaseUrl}/api/chat`, { 
+        message: JSON.stringify(formData)
       });
       
-      if (response.data.success) {
-        const caseAnalysis = response.data.analysis;
-        const caseId = caseAnalysis.caseId;
-        setCurrentCaseId(caseId);
+      if (response.data && response.data.session_id) {
+        // The server returns a "response" field with text and a "session_id"
+        const sessionId = response.data.session_id;
+        const analysisResponse = response.data.response;
         
-        // Store the analysis data
-        setAnalysisData(caseAnalysis);
+        setSessionId(sessionId);
+        setCurrentCaseId(formData.caseId);
         
-        // Only store the case ID in localStorage, not the analysis data
-        // The Dashboard will fetch fresh analysis data when it loads
-        localStorage.setItem('justiceAI_caseId', caseId);
+        // Create a mock analysis data structure for now since the server returns text
+        const mockAnalysisData = {
+          form_details: {
+            form_name: "FORM IF5",
+            document_title: "FINAL FORM/REPORT (Under Section 173 CR. P.C.)"
+          },
+          court_name: "",
+          case_identification: {
+            district: formData.victimLocation.split(',')[1]?.trim() || "",
+            police_station: "",
+            year: new Date().getFullYear().toString(),
+            fir_no: formData.previousCaseRef || "",
+            fir_date: formData.incidentDate || "",
+            final_report_or_chargesheet_no: "",
+            final_report_date: new Date().toISOString().split('T')[0],
+            acts_and_sections: [
+              { act: "IPC", section: "376" },
+              { act: "IPC", section: "354" }
+            ],
+            other_acts_and_sections: "",
+            report_type: "Charge Sheet"
+          },
+          report_summary: {
+            type_of_final_report: "Charge Sheet",
+            reason_if_unoccurred: "",
+            investigating_officer_name: "",
+            investigating_officer_rank: ""
+          },
+          complainant_details: {
+            name: "Complainant",
+            father_or_husband_name: ""
+          },
+          seized_properties_relied_upon: [],
+          accused_charge_sheeted: [{
+            name: "Accused",
+            is_name_verified: "Yes",
+            father_or_husband_name: "",
+            date_or_year_of_birth: "",
+            sex: "Male",
+            nationality: "Indian",
+            passport_info: {
+              passport_no: "",
+              date_of_issue: "",
+              place_of_issue: ""
+            },
+            religion: "",
+            is_sc_st: "",
+            occupation: "",
+            address: "",
+            is_address_verified: "",
+            provisional_criminal_no: "",
+            regular_criminal_no: "",
+            date_of_arrest: "",
+            date_of_release_on_bail: "",
+            date_forwarded_to_court: "",
+            charged_under_acts_sections: "IPC 376, IPC 354",
+            sureties_names_and_addresses: "",
+            previous_convictions: "",
+            status_of_accused: "Under Investigation"
+          }],
+          investigation_findings: {
+            action_if_fr_is_false: "",
+            result_of_laboratory_analysis: "Pending",
+            brief_facts_of_case: formData.caseDescription || ""
+          },
+          submission_details: {
+            is_refer_notice_served: "Yes",
+            refer_notice_date: new Date().toISOString().split('T')[0],
+            despatched_on_date: new Date().toISOString().split('T')[0],
+            forwarding_officer: {
+              name: "Officer Name",
+              rank: "Inspector",
+              number: "123"
+            },
+            submitting_investigating_officer: {
+              signature: "",
+              name: "IO Name",
+              rank: "Sub-Inspector",
+              number: "456"
+            }
+          },
+          serverResponse: analysisResponse
+        };
+        
+        // Store the analysis data and session info
+        setAnalysisData(mockAnalysisData);
+        
+        // Store important data in localStorage
+        localStorage.setItem('justiceAI_caseId', formData.caseId);
+        localStorage.setItem('justiceAI_sessionId', sessionId);
+        localStorage.setItem('justiceAI_analysisData', JSON.stringify(mockAnalysisData));
         
         // Show success message and display analysis report
         setIsRedirecting(true);
@@ -83,7 +176,7 @@ const NewCaseForm = ({ onBack }) => {
           setShowAnalysisReport(true);
         }, 1500);
       } else {
-        throw new Error(response.data.error || 'Failed to create case analysis');
+        throw new Error('Invalid response format from server');
       }
     } catch (error) {
       console.error('Error submitting case:', error);
@@ -128,9 +221,11 @@ const NewCaseForm = ({ onBack }) => {
   // If showing analysis report, render that component
   if (showAnalysisReport && analysisData) {
     return (
-      <CaseAnalysisReport 
-        caseId={currentCaseId}
+      <CaseAnalysisWithForms 
         analysisData={analysisData}
+        originalCaseData={formData}
+        sessionId={sessionId}
+        caseId={currentCaseId}
         onBack={onBack}
       />
     );
@@ -347,8 +442,27 @@ const NewCaseForm = ({ onBack }) => {
             Back to Dashboard
           </button>
           <h1 className="text-xl font-bold text-gray-800">New Case Entry</h1>
-          <div className="w-20"></div> {/* Spacer for alignment */}
+          <div className="flex items-center space-x-4">
+            {/* Chat Icon */}
+            <button
+              onClick={() => setShowChat(true)}
+              className="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg"
+              title="Chat with Case Assistant"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* Chat Modal */}
+        <ChatModal 
+          isOpen={showChat}
+          onClose={() => setShowChat(false)}
+          sessionId={sessionId}
+          caseId={currentCaseId}
+        />
 
         {/* Progress Steps */}
         <div className="flex justify-between items-center mb-8">
