@@ -516,7 +516,14 @@ app.get('/api/cases', async (req, res) => {
         assignedOfficer: 'Inspector Kumar',
         timeline: [
           { date: new Date().toISOString().split('T')[0], event: 'Case registered', status: 'completed' }
-        ]
+        ],
+        // Adding additional case details from cases.json
+        legalReferences: caseData.legalReferences || [],
+        legalRequirements: caseData.legalRequirements || [],
+        investigationSteps: caseData.investigationSteps || {},
+        relatedCases: caseData.relatedCases || [],
+        riskAssessment: caseData.riskAssessment || 'Low Risk',
+        complianceScore: caseData.complianceScore || 0
       };
     });
     
@@ -760,6 +767,45 @@ app.post('/api/update-steps', async (req, res) => {
 });
 
 // Start server
+// API endpoint to handle case edit prompts
+app.post('/api/case/edit', async (req, res) => {
+  try {
+    const { caseId, prompt } = req.body;
+    
+    if (!caseId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Case ID is required'
+      });
+    }
+    
+    if (!prompt || typeof prompt !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'A valid prompt is required'
+      });
+    }
+    
+    // For now, just log the prompt and return success
+    console.log(`Received prompt for case ${caseId}:`, prompt);
+    
+    // Just return 200 OK as requested, actual implementation will come later
+    res.status(200).json({
+      success: true,
+      message: 'Prompt received successfully',
+      caseId,
+      promptLength: prompt.length
+    });
+    
+  } catch (error) {
+    console.error('Error processing case edit prompt:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to process prompt'
+    });
+  }
+});
+
 const startServer = async () => {
   try {
     await initializeResponsesFile();
