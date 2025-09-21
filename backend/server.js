@@ -7,17 +7,12 @@ const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const Tesseract = require('tesseract.js');
 require('dotenv').config();
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Import authentication routes
 const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.Gemini_API);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Middleware
 app.use(cors());
@@ -211,106 +206,18 @@ app.post('/api/extract-text', upload.single('file'), async (req, res) => {
   }
 });
 
-// Submit initial case data and generate questions
+// Submit initial case data without questions
 app.post('/api/submit-case', async (req, res) => {
   try {
     const caseData = req.body;
     console.log('Received case data:', caseData);
 
-    // Generate AI questions based on the case data
-    const prompt = `
-You are a legal assistant AI helping to gather complete case information. Based on the following case details, generate a list of important questions that would help complete the case file for legal proceedings.
-
-Case Details:
-- Case ID: ${caseData.caseId || 'Not provided'}
-- Case Title: ${caseData.caseTitle || 'Not provided'}
-- Case Description: ${caseData.caseDescription || 'Not provided'}
-- Victim Age: ${caseData.victimAge || 'Not provided'}
-- Victim Gender: ${caseData.victimGender || 'Not provided'}
-- Victim Location: ${caseData.victimLocation || 'Not provided'}
-- Incident Date: ${caseData.incidentDate || 'Not provided'}
-- Incident Time: ${caseData.incidentTime || 'Not provided'}
-
-Please generate 5-8 relevant follow-up questions that would be important for this case. For each question, specify the type of input needed (text, textarea, select, date, time, number, etc.) and if it's a select type, provide the options.
-
-Format your response as a JSON array with objects containing:
-- question: the question text
-- type: input type (text, textarea, select, date, time, number, email, tel)
-- placeholder: placeholder text (if applicable)
-- options: array of options (only for select type)
-- required: boolean
-
-Example format:
-[
-  {
-    "question": "What was the weather condition during the incident?",
-    "type": "select",
-    "placeholder": "",
-    "options": ["Clear", "Rainy", "Cloudy", "Foggy", "Unknown"],
-    "required": true
-  },
-  {
-    "question": "Please provide additional details about the incident location",
-    "type": "textarea",
-    "placeholder": "Describe the exact location, landmarks, etc.",
-    "options": [],
-    "required": false
-  }
-]
-
-Only return the JSON array, no additional text.`;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    console.log('Raw AI response:', text);
-
-    // Parse the AI response
-    let questions;
-    try {
-      // Clean the response text to extract JSON
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        questions = JSON.parse(jsonMatch[0]);
-      } else {
-        throw new Error('No valid JSON found in response');
-      }
-    } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
-      // Fallback questions
-      questions = [
-        {
-          question: "What was the weather condition during the incident?",
-          type: "select",
-          placeholder: "",
-          options: ["Clear", "Rainy", "Cloudy", "Foggy", "Unknown"],
-          required: true
-        },
-        {
-          question: "Were there any witnesses to the incident?",
-          type: "select",
-          placeholder: "",
-          options: ["Yes", "No", "Unknown"],
-          required: true
-        },
-        {
-          question: "Please provide additional details about the incident",
-          type: "textarea",
-          placeholder: "Describe any additional relevant information",
-          options: [],
-          required: false
-        }
-      ];
-    }
-
-    // Store the case with generated questions
+    // Store the case without questions
     const responses = await readResponses();
     const newCase = {
       id: Date.now().toString(),
       submittedAt: new Date().toISOString(),
       basicInfo: caseData,
-      questions: questions,
       answers: {},
       completed: false
     };
@@ -320,8 +227,7 @@ Only return the JSON array, no additional text.`;
 
     res.json({
       success: true,
-      caseId: newCase.id,
-      questions: questions
+      caseId: newCase.id
     });
 
   } catch (error) {
@@ -334,15 +240,15 @@ Only return the JSON array, no additional text.`;
   }
 });
 
-// Submit answers to the generated questions
-app.post('/api/submit-answers', async (req, res) => {
+// Mark case as completed
+app.post('/api/complete-case', async (req, res) => {
   try {
-    const { caseId, answers } = req.body;
+    const { caseId } = req.body;
 
-    if (!caseId || !answers) {
+    if (!caseId) {
       return res.status(400).json({
         success: false,
-        error: 'Case ID and answers are required'
+        error: 'Case ID is required'
       });
     }
 
@@ -359,8 +265,7 @@ app.post('/api/submit-answers', async (req, res) => {
       });
     }
 
-    // Update the case with answers
-    responses.cases[caseIndex].answers = answers;
+    // Update the case as completed
     responses.cases[caseIndex].completed = true;
     responses.cases[caseIndex].completedAt = new Date().toISOString();
 
@@ -370,13 +275,13 @@ app.post('/api/submit-answers', async (req, res) => {
     if (writeSuccess) {
       res.json({
         success: true,
-        message: 'Answers submitted successfully',
+        message: 'Case marked as completed',
         case: responses.cases[caseIndex]
       });
     } else {
       res.status(500).json({
         success: false,
-        error: 'Failed to save answers'
+        error: 'Failed to update case'
       });
     }
 
@@ -386,6 +291,100 @@ app.post('/api/submit-answers', async (req, res) => {
       success: false,
       error: 'Failed to submit answers',
       details: error.message
+    });
+  }
+});
+
+// Case analysis endpoint - returns analysis data for a case
+app.post('/api/case', async (req, res) => {
+  try {
+    const { caseId, formData } = req.body;
+    console.log('Case analysis request:', caseId ? `Case ID: ${caseId}` : 'Form data submission');
+
+    try {
+      // Read the cases data from cases.json
+      const casesPath = path.join(__dirname, 'cases.json');
+      const casesContent = await fs.readFile(casesPath, 'utf8');
+      const cases = JSON.parse(casesContent);
+      
+      let analysis;
+      
+      if (caseId && cases[caseId]) {
+        // If a valid caseId is provided, retrieve that specific case
+        analysis = cases[caseId];
+        console.log(`Returning case data for case ID: ${caseId}`);
+      } else if (formData) {
+        // If form data is provided but no existing caseId, create a new case
+        const newCaseId = formData.caseId || Date.now().toString();
+        
+        // Start with a template case based on case type (e.g., first case in our JSON)
+        const templateCaseId = Object.keys(cases)[0];
+        const templateCase = cases[templateCaseId];
+        
+        // Create a new case with the form data and template data
+        analysis = {
+          ...templateCase,
+          caseId: newCaseId,
+          // Override any template data with form data
+          // Add more fields here as needed based on the formData structure
+        };
+        
+        // Save the new case to the cases.json file
+        cases[newCaseId] = analysis;
+        await fs.writeFile(casesPath, JSON.stringify(cases, null, 2));
+        
+        // Also save to responses.json for backward compatibility
+        const responses = await readResponses();
+        const newCase = {
+          id: newCaseId,
+          submittedAt: new Date().toISOString(),
+          basicInfo: formData,
+          completed: true
+        };
+        
+        responses.cases.push(newCase);
+        await writeResponses(responses);
+        
+        console.log(`Created new case with ID: ${newCaseId}`);
+      } else {
+        // If no valid caseId and no formData, return the first case as a default
+        const defaultCaseId = Object.keys(cases)[0];
+        analysis = cases[defaultCaseId];
+        console.log(`No case ID or form data provided, returning default case: ${defaultCaseId}`);
+      }
+      
+      // Return the analysis data
+      return res.json({
+        success: true,
+        analysis
+      });
+    } catch (readError) {
+      console.error('Error reading cases.json:', readError);
+      throw new Error('Failed to read case data');
+    }
+    
+    // Add a case analysis report text if not present
+    if (!analysis.caseAnalysisReport) {
+      analysis.caseAnalysisReport = `This ${isMinor ? 'POCSO' : 'IPC Section 376'} case requires ${urgentActions.length > 0 ? 'immediate attention to address missing critical information' : 'standard processing within statutory timelines'}. The case has a compliance score of ${analysis.complianceScore}% and is classified as ${analysis.riskAssessment} risk level. Follow the investigation steps carefully and ensure all required documents are collected.`;
+    }
+    
+    // Make sure all array properties exist to avoid frontend mapping errors
+    analysis.legalReferences = analysis.legalReferences || [];
+    analysis.missingFields = analysis.missingFields || [];
+    analysis.requiredDocuments = analysis.requiredDocuments || [];
+    analysis.relatedCases = analysis.relatedCases || [];
+    analysis.urgentActions = analysis.urgentActions || [];
+    
+    res.json({
+      success: true,
+      analysis
+    });
+    
+  } catch (error) {
+    console.error('Error in case analysis:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to generate case analysis'
     });
   }
 });
@@ -485,10 +484,45 @@ app.post('/api/submit-victim-case', async (req, res) => {
 // Get all cases
 app.get('/api/cases', async (req, res) => {
   try {
-    const responses = await readResponses();
+    // Read cases from the new cases.json file
+    const casesPath = path.join(__dirname, 'cases.json');
+    const casesContent = await fs.readFile(casesPath, 'utf8');
+    const casesData = JSON.parse(casesContent);
+    
+    // Transform the cases object into an array with additional metadata for the UI
+    const casesArray = Object.entries(casesData).map(([caseId, caseData]) => {
+      // Calculate the completion percentage of investigation steps
+      const investigationSteps = caseData.investigationSteps || {};
+      const totalSteps = Object.keys(investigationSteps).length;
+      const completedSteps = Object.values(investigationSteps).filter(step => step.completed).length;
+      const progressPercentage = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
+      
+      // Create a case object with the format expected by the frontend
+      return {
+        id: caseId,
+        title: caseData.caseClassification || 'Unclassified Case',
+        victimCode: `V-${caseId.substring(0, 4)}`,
+        offenseType: caseData.caseClassification || 'Unknown',
+        status: progressPercentage === 100 ? 'completed' : 'active',
+        priority: caseData.riskAssessment?.includes('High') ? 'high' : 
+                 caseData.riskAssessment?.includes('Medium') ? 'medium' : 'low',
+        progress: progressPercentage,
+        dateCreated: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+        lastUpdated: '1 day ago',
+        location: 'India',
+        description: caseData.caseAnalysisReport || 'No description available',
+        pendingTasks: caseData.missingFields || [],
+        evidence: caseData.requiredDocuments || [],
+        assignedOfficer: 'Inspector Kumar',
+        timeline: [
+          { date: new Date().toISOString().split('T')[0], event: 'Case registered', status: 'completed' }
+        ]
+      };
+    });
+    
     res.json({
       success: true,
-      cases: responses.cases
+      cases: casesArray
     });
   } catch (error) {
     console.error('Error in get cases:', error);
@@ -526,6 +560,128 @@ app.get('/api/cases/:id', async (req, res) => {
   }
 });
 
+// Case analysis endpoint - returns analysis data for frontend
+app.post('/api/case', async (req, res) => {
+  try {
+    const { caseId, caseDetails } = req.body;
+    
+    if (!caseId && !caseDetails) {
+      return res.status(400).json({
+        success: false,
+        error: 'Either caseId or caseDetails is required'
+      });
+    }
+    
+    let caseData;
+    
+    // If caseId provided, fetch from existing cases
+    if (caseId) {
+      const responses = await readResponses();
+      caseData = responses.cases.find(c => c.id === caseId);
+      
+      if (!caseData) {
+        return res.status(404).json({
+          success: false,
+          error: 'Case not found'
+        });
+      }
+    } else {
+      // Use provided case details
+      caseData = caseDetails;
+    }
+    
+    // Determine if it's a minor case
+    const isMinorCase = caseData.basicInfo?.victimAge && parseInt(caseData.basicInfo.victimAge) < 18;
+    
+    // Prepare analysis data based on case type
+    let analysisData = {
+      caseClassification: isMinorCase ? "POCSO Case" : "IPC Section 376",
+      complianceScore: Math.floor(Math.random() * 30) + 70, // Random score between 70-100
+      missingFields: [],
+      requiredDocuments: [],
+      legalReferences: []
+    };
+    
+    // Add case-specific data
+    if (isMinorCase) {
+      analysisData.missingFields = [
+        "Child Welfare Committee Notification",
+        "Support Person Assignment",
+        "Special Court Designation"
+      ];
+      
+      analysisData.requiredDocuments = [
+        "Medical Examination Report",
+        "Statement recorded under Section 164 CrPC",
+        "Age Proof Document",
+        "Child Welfare Committee Report"
+      ];
+      
+      analysisData.legalReferences = [
+        {
+          title: "POCSO Act Section 19",
+          description: "Mandatory reporting of offences"
+        },
+        {
+          title: "POCSO Act Section 24",
+          description: "Recording statement of a child"
+        },
+        {
+          title: "POCSO Act Section 26",
+          description: "Additional provisions regarding statement to be recorded"
+        }
+      ];
+      
+      analysisData.caseAnalysisReport = "This case involves a minor victim and falls under the POCSO Act. Special provisions for child victims must be followed, including appointment of support person and notification to Child Welfare Committee. The case must be tried in a Special Court designated under the POCSO Act.";
+      
+    } else {
+      // Adult victim case
+      analysisData.missingFields = [
+        "Detailed Medical Report",
+        "Scene of Crime Photographs",
+        "List of Witnesses"
+      ];
+      
+      analysisData.requiredDocuments = [
+        "FIR Copy",
+        "Medical Examination Report",
+        "Statement under Section 164 CrPC",
+        "Scene of Crime Report"
+      ];
+      
+      analysisData.legalReferences = [
+        {
+          title: "IPC Section 376",
+          description: "Punishment for sexual assault"
+        },
+        {
+          title: "CrPC Section 154",
+          description: "Information in cognizable cases"
+        },
+        {
+          title: "CrPC Section 164",
+          description: "Recording of confessions and statements"
+        }
+      ];
+      
+      analysisData.caseAnalysisReport = "This case involves an adult victim and falls under IPC Section 376. Standard investigation protocols should be followed, with special attention to medical examination and preserving crime scene evidence. Witness testimonies will be critical for establishing the case.";
+    }
+    
+    res.json({
+      success: true,
+      analysis: analysisData
+    });
+    
+  } catch (error) {
+    console.error('Error in case analysis:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate case analysis',
+      details: error.message
+    });
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
@@ -535,6 +691,74 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// API endpoint to update a specific investigation step
+app.post('/api/update-steps', async (req, res) => {
+  try {
+    const { caseId, stepName, completed } = req.body;
+    
+    if (!caseId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Case ID is required'
+      });
+    }
+    
+    if (!stepName) {
+      return res.status(400).json({
+        success: false,
+        error: 'Step name is required'
+      });
+    }
+    
+    if (typeof completed !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        error: 'Completed status must be a boolean'
+      });
+    }
+    
+    // Read the cases data from cases.json
+    const casesPath = path.join(__dirname, 'cases.json');
+    const casesContent = await fs.readFile(casesPath, 'utf8');
+    const cases = JSON.parse(casesContent);
+    
+    // Check if the case exists
+    if (!cases[caseId]) {
+      return res.status(404).json({
+        success: false,
+        error: 'Case not found'
+      });
+    }
+    
+    // Check if the step exists in the case's investigationSteps object
+    if (!cases[caseId].investigationSteps || !cases[caseId].investigationSteps[stepName]) {
+      return res.status(404).json({
+        success: false,
+        error: 'Investigation step not found'
+      });
+    }
+    
+    // Update the specified step's completion status
+    cases[caseId].investigationSteps[stepName].completed = completed;
+    
+    // Save the updated cases data back to the file
+    await fs.writeFile(casesPath, JSON.stringify(cases, null, 2));
+    
+    res.json({
+      success: true,
+      message: 'Investigation step updated successfully',
+      stepName,
+      completed
+    });
+  } catch (error) {
+    console.error('Error updating investigation steps:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update investigation steps'
+    });
+  }
+});
+
 // Start server
 const startServer = async () => {
   try {
@@ -542,7 +766,6 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`🚀 JusticeAI Backend server running on port ${PORT}`);
       console.log(`📁 Responses file: ${responsesFilePath}`);
-      console.log(`🤖 Gemini AI model: gemini-1.5-flash`);
       console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
     });
   } catch (error) {

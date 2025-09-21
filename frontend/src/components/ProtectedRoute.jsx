@@ -1,11 +1,20 @@
 import { useAuth } from '../contexts/AuthContext';
 import LoginForm from './LoginForm';
+import { useState } from 'react';
 
 const ProtectedRoute = ({ children, requiredRole = null, requiredRoles = null }) => {
-  const { user, loading, isAuthenticated, hasRole, hasAnyRole } = useAuth();
+  const { user, loading, isAuthenticated, hasRole, hasAnyRole, login } = useAuth();
+  const [loginProcessing, setLoginProcessing] = useState(false);
+
+  // Handle login success without page reload
+  const handleLoginSuccess = (user, token) => {
+    console.log('Login successful - navigating to protected content');
+    // No reload needed - the auth context will update automatically
+    setLoginProcessing(false);
+  };
 
   // Show loading spinner while checking authentication
-  if (loading) {
+  if (loading || loginProcessing) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -21,7 +30,7 @@ const ProtectedRoute = ({ children, requiredRole = null, requiredRoles = null })
 
   // Show login form if not authenticated
   if (!isAuthenticated()) {
-    return <LoginForm onLoginSuccess={() => window.location.reload()} />;
+    return <LoginForm onLoginSuccess={handleLoginSuccess} />;
   }
 
   // Check role-based access

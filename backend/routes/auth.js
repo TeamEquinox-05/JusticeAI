@@ -43,6 +43,30 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Verify token endpoint
+router.get('/verify', verifyToken, async (req, res) => {
+  try {
+    // If middleware passes, token is valid
+    return res.json({
+      success: true,
+      message: 'Token is valid',
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        role: req.user.role,
+        name: req.user.name
+      }
+    });
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid token'
+    });
+  }
+});
+
 // Get current user info (protected route)
 router.get('/me', verifyToken, async (req, res) => {
   try {

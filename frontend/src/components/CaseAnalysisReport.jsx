@@ -1,369 +1,420 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
-const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'new' }) => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [analysisReport, setAnalysisReport] = useState(null)
+const CaseAnalysisReport = ({ formData, onBack, onContinueEditing, caseType = 'new', caseId, analysisData = null }) => {
+  const [isLoading, setIsLoading] = useState(!analysisData)
+  const [analysisReport, setAnalysisReport] = useState(analysisData || {
+    caseClassification: "Pending",
+    complianceScore: 0,
+    missingFields: [],
+    requiredDocuments: [],
+    legalReferences: [],
+    investigationSteps: {},
+    caseAnalysisReport: ""
+  })
+  const [error, setError] = useState(null)
 
-  // Generate analysis report based on form data
-  const generateAnalysisReport = () => {
-    const report = {
-      caseClassification: formData.victimAge && parseInt(formData.victimAge) < 18 ? 'POCSO Act Case' : 'IPC Section 376 Case',
-      complianceScore: 78,
-      completionPercentage: getCompletionPercentage(),
-      missingFields: [],
-      requiredDocuments: [],
-      legalRequirements: [],
-      investigationSteps: [],
-      relatedCases: [
-        'State vs. John Doe - Similar Pattern (2024)',
-        'XYZ vs. ABC - Precedent Case (2023)',
-        'Mumbai HC - Digital Evidence Standards (2023)'
-      ],
-      urgentActions: [],
-      timelineCompliance: 'Partially Compliant',
-      riskAssessment: 'Medium Risk'
+  // Function to toggle the completion status of an investigation step
+  const toggleStep = async (stepName) => {
+    if (!analysisReport.investigationSteps || !analysisReport.investigationSteps[stepName]) {
+      console.error(`Step "${stepName}" not found in investigation steps`);
+      return;
     }
-
-    // Check missing fields
-    if (!formData.caseId) report.missingFields.push('Case ID/FIR Number')
-    if (!formData.caseTitle) report.missingFields.push('Case Title')
-    if (!formData.caseDescription) report.missingFields.push('Detailed Case Description')
-    if (!formData.victimAge) report.missingFields.push('Victim Age (Critical for legal classification)')
-    if (!formData.victimGender) report.missingFields.push('Victim Gender')
-    if (!formData.incidentDate) report.missingFields.push('Incident Date')
-    if (!formData.incidentTime) report.missingFields.push('Incident Time')
-    if (!formData.victimLocation) report.missingFields.push('Incident Location')
-    if (formData.evidenceFiles && formData.evidenceFiles.length === 0) report.missingFields.push('Evidence Files')
-
-    // Set urgent actions based on missing critical fields
-    if (!formData.victimAge) {
-      report.urgentActions.push('CRITICAL: Determine victim age immediately for proper legal classification')
+    
+    // Get current completion status of this step
+    const isCurrentlyCompleted = analysisReport.investigationSteps[stepName].completed;
+    
+    // Create a copy of the analysis report to update locally
+    const updatedReport = { 
+      ...analysisReport,
+      investigationSteps: {
+        ...analysisReport.investigationSteps,
+        [stepName]: {
+          ...analysisReport.investigationSteps[stepName],
+          completed: !isCurrentlyCompleted
+        }
+      }
+    };
+    
+    // Update local state immediately for better UX
+    setAnalysisReport(updatedReport);
+    
+    try {
+      // Send update to backend
+      await axios.post('http://localhost:3001/api/update-steps', {
+        caseId: caseId,
+        stepName: stepName,
+        completed: !isCurrentlyCompleted
+      });
+      
+      console.log(`Step "${stepName}" ${isCurrentlyCompleted ? 'uncompleted' : 'completed'} successfully`);
+    } catch (err) {
+      console.error('Error updating step status:', err);
+      
+      // Revert the change if the API call fails
+      setAnalysisReport(analysisReport);
     }
-    if (!formData.incidentDate) {
-      report.urgentActions.push('URGENT: Document incident date for timeline compliance')
+  };
+  
+  // Fetch case analysis data from backend if not provided directly
+  useEffect(() => {
+    // If analysisData was provided directly, use it and skip the fetch
+    if (analysisData) {
+      setAnalysisReport(analysisData);
+      setIsLoading(false);
+      return;
     }
+    
+    const fetchCaseAnalysis = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Determine the appropriate payload based on whether we have caseId or formData
+        const payload = caseId ? { caseId } : { caseDetails: formData };
+        
+        // Make API call to get the case analysis
+        const response = await axios.post('http://localhost:3001/api/case', payload);
+        
+        if (response.data.success) {
+          setAnalysisReport(response.data.analysis);
+        } else {
+          throw new Error(response.data.error || 'Failed to fetch case analysis');
+        }
+      } catch (err) {
+        console.error('Error fetching case analysis:', err);
+        setError(err.message || 'An error occurred while fetching case analysis');
+        
+        // Set a minimal error report
+        const errorReport = generateErrorReport();
+        setAnalysisReport(errorReport);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // Required documents based on case type
-    if (formData.victimAge && parseInt(formData.victimAge) < 18) {
-      report.requiredDocuments = [
-        'Birth Certificate (Age Proof) - MANDATORY',
-        'Medical Examination Report',
-        'FIR Copy',
-        'Victim Statement (Child-friendly recording)',
-        'Child Welfare Committee Report',
-        'School Records (if applicable)',
-        'Guardian Consent Documentation'
-      ]
-      report.legalRequirements = [
-        'POCSO Act compliance mandatory',
-        'Child Welfare Committee involvement required within 24 hours',
-        'Special court proceedings required',
-        'NGO representation mandatory',
-        'Video recording of statement required',
-        'Child-friendly investigation procedures',
-        'No media disclosure of victim identity'
-      ]
-      report.investigationSteps = [
-        'Immediate medical examination (within 24 hours)',
-        'Age verification using birth certificate/school records',
-        'Child Welfare Committee notification',
-        'Special POCSO court case filing',
-        'NGO coordinator assignment',
-        'Forensic evidence collection with child-friendly procedures',
-        'Juvenile Justice Board consultation if accused is minor'
-      ]
-    } else {
-      report.requiredDocuments = [
-        'FIR Copy',
-        'Medical Examination Report',
-        'Victim Statement',
-        'Witness Statements',
-        'Evidence Documentation',
-        'Investigation Report',
-        'Scene of Crime Documentation'
-      ]
-      report.legalRequirements = [
-        'IPC/BNS Section 376 compliance',
-        'Regular court proceedings',
-        'Victim impact statement',
-        'Evidence chain of custody',
-        'Proper documentation of consent/non-consent',
-        'Medical evidence within 72 hours'
-      ]
-      report.investigationSteps = [
-        'Medical examination within 72 hours',
-        'Detailed victim statement recording',
-        'Witness interviews and statements',
-        'Scene reconstruction and evidence collection',
-        'Forensic analysis of physical evidence',
-        'Background verification of accused',
-        'Charge sheet preparation'
-      ]
-    }
-
-    return report
-  }
-
-  const getCompletionPercentage = () => {
-    if (!formData) return 0
-    const fields = Object.keys(formData)
-    const filledFields = fields.filter(field => {
-      const value = formData[field]
-      if (Array.isArray(value)) return value.length > 0
-      return value && value.toString().trim() !== ''
-    })
-    return Math.round((filledFields.length / fields.length) * 100)
-  }
-
-  // Simulate loading and generate report
-  useState(() => {
+    // Wait a moment before fetching to give the appearance of analysis being performed
     const timer = setTimeout(() => {
-      const report = generateAnalysisReport()
-      setAnalysisReport(report)
-      setIsLoading(false)
-    }, 3000)
+      fetchCaseAnalysis();
+    }, 1000);
 
-    return () => clearTimeout(timer)
-  }, [])
+    return () => clearTimeout(timer);
+  }, [analysisData, caseId, formData]);
 
+  // Generate a fallback error report if analysis data fetching fails
+  const generateErrorReport = () => {
+    return {
+      caseClassification: "Unknown",
+      complianceScore: 0,
+      missingFields: ["Error fetching data"],
+      requiredDocuments: ["Error fetching data"],
+      legalReferences: [],
+      caseAnalysisReport: "Failed to generate case analysis. Please try again."
+    };
+  };
+
+  // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-8 lg:p-12 text-center max-w-md w-full">
-          <div className="w-16 h-16 lg:w-20 lg:h-20 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">Analyzing Case Details</h3>
-          <p className="text-sm lg:text-base text-gray-600 mb-4">AI is processing your case information and generating compliance report...</p>
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full animate-pulse" style={{ width: '75%' }}></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full">
+          <div className="flex items-center justify-center">
+            <svg className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <h2 className="text-xl font-medium text-gray-900">Analyzing case details...</h2>
           </div>
-          <p className="text-xs lg:text-sm text-gray-500">Checking legal requirements and generating recommendations</p>
+          <p className="mt-4 text-gray-500 text-center">Our AI is processing your case information to generate a comprehensive report.</p>
         </div>
       </div>
-    )
+    );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4 lg:p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 lg:mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 space-y-4 lg:space-y-0">
+  // Error state
+  if (error && !analysisReport) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full">
+          <div className="flex items-center justify-center">
+            <svg className="h-10 w-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <h2 className="text-xl font-medium text-gray-900 ml-3">Analysis Failed</h2>
+          </div>
+          <p className="mt-4 text-gray-500 text-center">{error}</p>
+          <div className="mt-6 text-center">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors self-start"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-sm lg:text-base">Back to Dashboard</span>
+              Return to Dashboard
             </button>
-            
-            <div className="flex flex-col lg:flex-row space-y-2 lg:space-y-0 lg:space-x-4">
-              <button 
-                onClick={onContinueEditing}
-                className="px-4 py-2 lg:px-6 lg:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:ring-2 hover:ring-blue-500 transform hover:-translate-y-1 transition-all duration-200 text-sm lg:text-base"
-              >
-                Continue Editing
-              </button>
-              <button className="px-4 py-2 lg:px-6 lg:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:ring-2 hover:ring-green-500 transform hover:-translate-y-1 transition-all duration-200 text-sm lg:text-base">
-                Download Report
-              </button>
-              <button className="px-4 py-2 lg:px-6 lg:py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 hover:ring-2 hover:ring-gray-500 transform hover:-translate-y-1 transition-all duration-200 text-sm lg:text-base">
-                Save to Cases
-              </button>
-            </div>
           </div>
+        </div>
+      </div>
+    );
+  }
 
-          {/* Report Header */}
-          <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6 lg:p-8">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
+  // Main report content
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <button 
+            onClick={onBack} 
+            className="flex items-center text-gray-700 hover:text-gray-900"
+          >
+            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </button>
+          <h1 className="text-2xl font-bold text-gray-800">Case Analysis Report</h1>
+          {onContinueEditing && (
+            <button
+              onClick={onContinueEditing}
+              className="text-blue-600 hover:text-blue-800 flex items-center"
+            >
+              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Continue Editing
+            </button>
+          )}
+        </div>
+
+        {/* Case ID and Classification */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
               <div>
-                <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Case Analysis Report</h1>
-                <p className="text-gray-600 text-sm lg:text-base">AI-Generated Legal Compliance Assessment</p>
+                <div className="text-sm font-medium text-gray-500">Case ID</div>
+                <div className="text-xl font-bold text-gray-900">{caseId || "New Case"}</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{analysisReport.complianceScore}%</div>
-                <div className="text-sm lg:text-base text-gray-600">Compliance Score</div>
+              
+              <div className="mt-4 md:mt-0">
+                <div className="text-sm font-medium text-gray-500">Classification</div>
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                  {analysisReport?.caseClassification || "Unclassified"}
+                </span>
+              </div>
+              
+              <div className="mt-4 md:mt-0 flex flex-col items-center">
+                <div className="text-sm font-medium text-gray-500">Compliance Score</div>
+                <div className="mt-1 relative">
+                  <svg className="w-16 h-16" viewBox="0 0 36 36">
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="#E5E7EB"
+                      strokeWidth="3"
+                    />
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke={analysisReport?.complianceScore >= 90 ? "#34D399" : analysisReport?.complianceScore >= 70 ? "#FBBF24" : "#EF4444"}
+                      strokeWidth="3"
+                      strokeDasharray={`${analysisReport?.complianceScore || 0}, 100`}
+                    />
+                  </svg>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold">
+                    {analysisReport?.complianceScore || 0}%
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Case Classification */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6 border-l-4 border-blue-500">
-              <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-2">Case Classification</h3>
-              <p className="text-blue-700 font-medium text-sm lg:text-base">{analysisReport.caseClassification}</p>
-              <p className="text-gray-600 text-xs lg:text-sm mt-2">
-                Form completion: {analysisReport.completionPercentage}% | Timeline: {analysisReport.timelineCompliance}
-              </p>
-            </div>
-
-            {/* Urgent Actions */}
-            {analysisReport.urgentActions.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6 border-l-4 border-red-500">
-                <h3 className="text-lg lg:text-xl font-bold text-red-800 mb-3 flex items-center">
-                  <svg className="w-5 h-5 lg:w-6 lg:h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Urgent Actions Required
-                </h3>
-                <ul className="space-y-2">
-                  {analysisReport.urgentActions.map((action, index) => (
-                    <li key={index} className="flex items-start space-x-2 text-red-700">
-                      <svg className="w-4 h-4 lg:w-5 lg:h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-sm lg:text-base font-medium">{action}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Missing Fields */}
-            {analysisReport.missingFields.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6 border-l-4 border-yellow-500">
-                <h3 className="text-lg lg:text-xl font-bold text-yellow-800 mb-3">Missing Required Fields</h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                  {analysisReport.missingFields.map((field, index) => (
-                    <div key={index} className="flex items-center space-x-2 text-yellow-700">
-                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      <span className="text-sm lg:text-base">{field}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Required Documents */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6 border-l-4 border-purple-500">
-              <h3 className="text-lg lg:text-xl font-bold text-purple-800 mb-3">Required Documents Checklist</h3>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                {analysisReport.requiredDocuments.map((doc, index) => (
-                  <div key={index} className="flex items-start space-x-2 text-purple-700">
-                    <svg className="w-4 h-4 lg:w-5 lg:h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span className="text-sm lg:text-base">{doc}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Legal Requirements */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6 border-l-4 border-indigo-500">
-              <h3 className="text-lg lg:text-xl font-bold text-indigo-800 mb-3">Legal Compliance Requirements</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Missing Fields */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <svg className="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Missing Required Fields
+              </h2>
               <ul className="space-y-2">
-                {analysisReport.legalRequirements.map((req, index) => (
-                  <li key={index} className="flex items-start space-x-2 text-indigo-700">
-                    <svg className="w-4 h-4 lg:w-5 lg:h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                {analysisReport?.missingFields?.map((field, index) => (
+                  <li key={index} className="flex items-start">
+                    <svg className="w-5 h-5 text-red-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                    <span className="text-sm lg:text-base">{req}</span>
+                    <span className="text-gray-700">{field}</span>
                   </li>
                 ))}
+                {analysisReport?.missingFields?.length === 0 && (
+                  <li className="flex items-start">
+                    <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">All required fields complete</span>
+                  </li>
+                )}
               </ul>
-            </div>
-
-            {/* Investigation Steps */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6 border-l-4 border-green-500">
-              <h3 className="text-lg lg:text-xl font-bold text-green-800 mb-3">Investigation Roadmap</h3>
-              <ol className="space-y-3">
-                {analysisReport.investigationSteps.map((step, index) => (
-                  <li key={index} className="flex items-start space-x-3 text-green-700">
-                    <span className="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-full w-6 h-6 lg:w-7 lg:h-7 flex items-center justify-center text-xs lg:text-sm font-bold flex-shrink-0 mt-0.5">
-                      {index + 1}
-                    </span>
-                    <span className="text-sm lg:text-base">{step}</span>
-                  </li>
-                ))}
-              </ol>
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Risk Assessment */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6">
-              <h3 className="text-base lg:text-lg font-bold text-gray-800 mb-4">Risk Assessment</h3>
-              <div className="text-center">
-                <div className={`text-2xl font-bold mb-2 ${
-                  analysisReport.riskAssessment === 'High Risk' ? 'text-red-600' :
-                  analysisReport.riskAssessment === 'Medium Risk' ? 'text-yellow-600' :
-                  'text-green-600'
-                }`}>
-                  {analysisReport.riskAssessment}
-                </div>
-                <p className="text-xs lg:text-sm text-gray-600">Based on case complexity and missing elements</p>
-              </div>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6">
-              <h3 className="text-base lg:text-lg font-bold text-gray-800 mb-4">Case Statistics</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-xs lg:text-sm text-gray-600">Form Completion</span>
-                  <span className="text-xs lg:text-sm font-medium">{analysisReport.completionPercentage}%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-xs lg:text-sm text-gray-600">Missing Fields</span>
-                  <span className="text-xs lg:text-sm font-medium">{analysisReport.missingFields.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-xs lg:text-sm text-gray-600">Required Documents</span>
-                  <span className="text-xs lg:text-sm font-medium">{analysisReport.requiredDocuments.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-xs lg:text-sm text-gray-600">Investigation Steps</span>
-                  <span className="text-xs lg:text-sm font-medium">{analysisReport.investigationSteps.length}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Related Cases */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6">
-              <h3 className="text-base lg:text-lg font-bold text-gray-800 mb-4">Related Cases</h3>
+          {/* Required Documents */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Required Documents
+              </h2>
               <ul className="space-y-2">
-                {analysisReport.relatedCases.map((caseRef, index) => (
-                  <li key={index} className="flex items-start space-x-2 text-gray-700">
-                    <svg className="w-3 h-3 lg:w-4 lg:h-4 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                {analysisReport?.requiredDocuments?.map((doc, index) => (
+                  <li key={index} className="flex items-start">
+                    <svg className="w-5 h-5 text-gray-400 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-xs lg:text-sm">{caseRef}</span>
+                    <span className="text-gray-700">{doc}</span>
                   </li>
-                ))}
+                )) || (
+                  <li className="text-gray-500 italic">No required documents available</li>
+                )}
               </ul>
             </div>
+          </div>
 
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-4 lg:p-6">
-              <h3 className="text-base lg:text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:ring-2 hover:ring-blue-500 transform hover:-translate-y-1 transition-all duration-200 text-xs lg:text-sm">
-                  Generate PDF Report
-                </button>
-                <button className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 hover:ring-2 hover:ring-green-500 transform hover:-translate-y-1 transition-all duration-200 text-xs lg:text-sm">
-                  Export to Legal Database
-                </button>
-                <button className="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 hover:ring-2 hover:ring-orange-500 transform hover:-translate-y-1 transition-all duration-200 text-xs lg:text-sm">
-                  Schedule Court Filing
-                </button>
-                <button className="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 hover:shadow-md transition-all duration-200 text-xs lg:text-sm">
-                  Share with Team
-                </button>
-              </div>
+          {/* Legal References */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <svg className="w-5 h-5 text-indigo-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                </svg>
+                Legal References
+              </h2>
+              <ul className="space-y-3">
+                {analysisReport?.legalReferences?.map((ref, index) => (
+                  <li key={index} className="border-b border-gray-100 pb-2 last:border-0 last:pb-0">
+                    <div className="font-medium text-gray-800">{ref.title}</div>
+                    <div className="text-sm text-gray-600 mt-1">{ref.description}</div>
+                  </li>
+                )) || (
+                  <li className="text-gray-500 italic">No legal references available</li>
+                )}
+              </ul>
             </div>
           </div>
+
+          {/* Legal Requirements */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <svg className="w-5 h-5 text-purple-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                </svg>
+                Legal Requirements
+              </h2>
+              <ul className="space-y-3">
+                {analysisReport?.legalRequirements?.map((req, index) => (
+                  <li key={index} className="flex items-start">
+                    <svg className="w-5 h-5 text-purple-400 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-700">{req}</span>
+                  </li>
+                )) || (
+                  <li className="text-gray-500 italic">No legal requirements available</li>
+                )}
+              </ul>
+            </div>
+          </div>
+
+          {/* Investigation Steps */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <svg className="w-5 h-5 text-teal-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                Investigation Steps Checklist
+              </h2>
+              <div className="space-y-3">
+                {analysisReport?.investigationSteps && Object.keys(analysisReport.investigationSteps).length > 0 ? (
+                  Object.entries(analysisReport.investigationSteps).map(([stepName, stepData], index) => {
+                    const isCompleted = stepData.completed;
+                    return (
+                      <div 
+                        key={index} 
+                        className={`flex items-start p-2 rounded-md transition-colors ${isCompleted ? 'bg-green-50' : 'hover:bg-gray-50'}`}
+                      >
+                        <div 
+                          className="cursor-pointer flex items-center" 
+                          onClick={() => toggleStep(stepName)}
+                        >
+                          <div className={`w-5 h-5 mr-3 flex-shrink-0 rounded border ${isCompleted ? 'bg-green-500 border-green-500' : 'border-gray-300'} flex items-center justify-center`}>
+                            {isCompleted && (
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            )}
+                          </div>
+                          <span className={`text-gray-700 ${isCompleted ? 'line-through text-gray-500' : ''}`}>
+                            {stepName}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-gray-500 italic">No investigation steps available</div>
+                )}
+              </div>
+              {analysisReport?.investigationSteps && Object.keys(analysisReport.investigationSteps).length > 0 && (
+                <div className="mt-4 text-right">
+                  <span className="text-sm text-gray-500">
+                    {Object.values(analysisReport.investigationSteps).filter(step => step.completed).length} of {Object.keys(analysisReport.investigationSteps).length} steps completed
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Case Analysis Report */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden mt-6">
+          <div className="p-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+              <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              Case Analysis Report
+            </h2>
+            <div className="prose max-w-none text-gray-700">
+              <p>{analysisReport?.caseAnalysisReport || "No case analysis report available."}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+          <button
+            onClick={onBack}
+            className="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
+          >
+            Return to Dashboard
+          </button>
+          
+          <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+            Export Report
+          </button>
+          
+          <button className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm">
+            Continue to Case Management
+          </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CaseAnalysisReport
+export default CaseAnalysisReport;

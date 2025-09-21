@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginForm = ({ onLoginSuccess }) => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -32,20 +33,18 @@ const LoginForm = ({ onLoginSuccess }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/auth/login', {
-        username: formData.username,
-        password: formData.password
-      });
-
-      if (response.data.success) {
-        // Store token in localStorage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
-        // Call success callback
+      console.log('Attempting login with:', formData.username);
+      // Use the login function from AuthContext
+      const result = await login(formData.username, formData.password);
+      
+      if (result.success) {
+        console.log('Login successful via context');
+        // Call success callback if provided
         if (onLoginSuccess) {
-          onLoginSuccess(response.data.user, response.data.token);
+          onLoginSuccess();
         }
+      } else {
+        setError(result.message || 'Login failed. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error);

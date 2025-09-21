@@ -1,0 +1,217 @@
+{
+  "777": {
+    "caseId": "777",
+    "caseClassification": "IPC Section 376 Case",
+    "complianceScore": 85,
+    "completionPercentage": 100,
+    "missingFields": [],
+    "requiredDocuments": [
+      "FIR Copy",
+      "Medical Examination Report",
+      "Victim Statement",
+      "Witness Statements",
+      "Evidence Documentation",
+      "Investigation Report",
+      "Scene of Crime Documentation"
+    ],
+    "legalReferences": [
+      {
+        "title": "BNS Section 376",
+        "description": "Definition of sexual assault and prescribed punishments"
+      },
+      {
+        "title": "Criminal Procedure Code, Section 164A",
+        "description": "Medical examination of victim of rape"
+      },
+      {
+        "title": "Indian Evidence Act, Section 114A",
+        "description": "Presumption as to absence of consent in certain prosecutions for rape"
+      }
+    ],
+    "legalRequirements": [
+      "IPC/BNS Section 376 compliance",
+      "Regular court proceedings",
+      "Victim impact statement",
+      "Evidence chain of custody",
+      "Proper documentation of consent/non-consent",
+      "Medical evidence within 72 hours"
+    ],
+    "investigationSteps": {
+      "Medical examination within 72 hours": {
+        "completed": false
+      },
+      "Detailed victim statement recording": {
+        "completed": false
+      },
+      "Witness interviews and statements": {
+        "completed": false
+      },
+      "Scene reconstruction and evidence collection": {
+        "completed": false
+      },
+      "Forensic analysis of physical evidence": {
+        "completed": true
+      },
+      "Background verification of accused": {
+        "completed": false
+      },
+      "Charge sheet preparation": {
+        "completed": false
+      }
+    },
+    "relatedCases": [
+      "State vs. John Doe - Similar Pattern (2024)",
+      "XYZ vs. ABC - Precedent Case (2023)",
+      "Mumbai HC - Digital Evidence Standards (2023)"
+    ],
+    "urgentActions": [],
+    "timelineCompliance": "Partially Coooooooo",
+    "riskAssessment": "Medium Risk",
+    "caseAnalysisReport": "This IPC Section 376 case requires standard processing within statutory timelines. The case has a compliance score of 65% and is classified as Medium Risk risk level. Follow the investigation steps carefully and ensure all required documents are collected."
+  },
+  "1758445448290": {
+    "caseId": "1758445448290",
+    "caseClassification": "IPC Section 376 Case",
+    "complianceScore": 85,
+    "completionPercentage": 100,
+    "missingFields": [],
+    "requiredDocuments": [
+      "FIR Copy",
+      "Medical Examination Report",
+      "Victim Statement",
+      "Witness Statements",
+      "Evidence Documentation",
+      "Investigation Report",
+      "Scene of Crime Documentation"
+    ],
+    "legalReferences": [
+      {
+        "title": "BNS Section 376",
+        "description": "Definition of sexual assault and prescribed punishments"
+      },
+      {
+        "title": "Criminal Procedure Code, Section 164A",
+        "description": "Medical examination of victim of rape"
+      },
+      {
+        "title": "Indian Evidence Act, Section 114A",
+        "description": "Presumption as to absence of consent in certain prosecutions for rape"
+      }
+    ],
+    "legalRequirements": [
+      "IPC/BNS Section 376 compliance",
+      "Regular court proceedings",
+      "Victim impact statement",
+      "Evidence chain of custody",
+      "Proper documentation of consent/non-consent",
+      "Medical evidence within 72 hours"
+    ],
+    "investigationSteps": {
+      "Medical examination within 72 hours": {
+        "completed": false
+      },
+      "Detailed victim statement recording": {
+        "completed": true
+      },
+      "Witness interviews and statements": {
+        "completed": true
+      },
+      "Scene reconstruction and evidence collection": {
+        "completed": false
+      },
+      "Forensic analysis of physical evidence": {
+        "completed": false
+      },
+      "Background verification of accused": {
+        "completed": false
+      },
+      "Charge sheet preparation": {
+        "completed": false
+      }
+    },
+    "relatedCases": [
+      "State vs. John Doe - Similar Pattern (2024)",
+      "XYZ vs. ABC - Precedent Case (2023)",
+      "Mumbai HC - Digital Evidence Standards (2023)"
+    ],
+    "urgentActions": [],
+    "timelineCompliance": "Partially Coooooooo",
+    "riskAssessment": "Medium Risk",
+    "caseAnalysisReport": "This IPC Section 376 case requires standard processing within statutory timelines. The case has a compliance score of 65% and is classified as Medium Risk risk level. Follow the investigation steps carefully and ensure all required documents are collected."
+  },
+  "1758445448291": {
+    "caseId": "1758445448291",
+    "caseClassification": "POCSO Case",
+    "complianceScore": 75,
+    "completionPercentage": 70,
+    "missingFields": [
+      "Child Welfare Committee Notification",
+      "Support Person Assignment"
+    ],
+    "requiredDocuments": [
+      "FIR Copy",
+      "Medical Examination Report",
+      "Victim Statement (Recorded by Magistrate)",
+      "Age Proof of Victim",
+      "Witness Statements",
+      "Evidence Documentation",
+      "Scene of Crime Documentation"
+    ],
+    "legalReferences": [
+      {
+        "title": "POCSO Act Section 4",
+        "description": "Punishment for penetrative sexual assault"
+      },
+      {
+        "title": "POCSO Act Section 29",
+        "description": "Presumption as to certain offences"
+      },
+      {
+        "title": "Juvenile Justice Act, Section 74",
+        "description": "Prohibition on disclosure of identity of children"
+      }
+    ],
+    "legalRequirements": [
+      "POCSO Act compliance",
+      "Special Court proceedings",
+      "Child-friendly procedures",
+      "Evidence chain of custody",
+      "Mandatory reporting",
+      "Child Welfare Committee involvement"
+    ],
+    "investigationSteps": {
+      "Medical examination within 24 hours": {
+        "completed": true
+      },
+      "Statement recording by Magistrate": {
+        "completed": true
+      },
+      "Child Welfare Committee notification": {
+        "completed": false
+      },
+      "Special Court registration": {
+        "completed": true
+      },
+      "Support person assignment": {
+        "completed": false
+      },
+      "Background verification of accused": {
+        "completed": false
+      },
+      "Charge sheet preparation": {
+        "completed": false
+      }
+    },
+    "relatedCases": [
+      "State vs. Kumar - Similar Pattern (2023)",
+      "ABC vs. XYZ - Precedent Case (2022)"
+    ],
+    "urgentActions": [
+      "Immediate Child Welfare Committee notification required",
+      "Support person needs to be assigned within 24 hours"
+    ],
+    "timelineCompliance": "Delayed",
+    "riskAssessment": "High Risk",
+    "caseAnalysisReport": "This POCSO case requires immediate attention to address missing critical information. The case has a compliance score of 75% and is classified as High Risk. Follow the investigation steps carefully and address the urgent actions immediately."
+  }
+}

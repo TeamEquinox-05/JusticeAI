@@ -8,9 +8,26 @@ import LegalReferences from './components/LegalReferences'
 import VictimForm from './components/VictimForm'
 import DocumentUpload from './components/DocumentUpload'
 
+// Debug component to help diagnose login issues
+function DebugInfo() {
+  const { user, token, loading, isAuthenticated } = useAuth();
+  
+  useEffect(() => {
+    console.log('Auth state:', {
+      user,
+      token,
+      loading,
+      isAuthenticated: isAuthenticated()
+    });
+  }, [user, token, loading, isAuthenticated]);
+  
+  return null; // This component doesn't render anything
+}
+
 function App() {
   return (
     <AuthProvider>
+      <DebugInfo />
       <AppContent />
     </AuthProvider>
   )
@@ -19,7 +36,16 @@ function App() {
 function AppContent() {
   const [activeView, setActiveView] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, loading, user } = useAuth()
+  
+  useEffect(() => {
+    console.log('AppContent rendered with:', { 
+      isAuthenticated: isAuthenticated(), 
+      loading, 
+      user, 
+      activeView 
+    });
+  }, [isAuthenticated, loading, user, activeView]);
 
   // Check URL parameters for direct access
   useEffect(() => {

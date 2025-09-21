@@ -1,123 +1,54 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Cases = () => {
   const [selectedFilter, setSelectedFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCase, setSelectedCase] = useState(null)
+  const [casesData, setCasesData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Mock data for cases
-  const casesData = [
-    {
-      id: 'FIR001/2025',
-      victimCode: 'V-2025-001',
-      title: 'Child Sexual Abuse Case',
-      offenseType: 'POCSO Act Sec 3/4',
-      status: 'active',
-      priority: 'high',
-      progress: 75,
-      assignedOfficer: 'Inspector M. Sharma',
-      dateCreated: '2025-09-15',
-      lastUpdated: '2 hours ago',
-      location: 'Delhi, India',
-      description: 'Case involving alleged sexual abuse of a minor victim. Investigation ongoing with court proceedings initiated.',
-      pendingTasks: ['Court documents pending', 'Medical report review'],
-      evidence: ['Initial complaint', 'Medical examination report', 'Witness statements'],
-      timeline: [
-        { date: '2025-09-15', event: 'FIR registered', status: 'completed' },
-        { date: '2025-09-16', event: 'Initial investigation started', status: 'completed' },
-        { date: '2025-09-18', event: 'Medical examination conducted', status: 'completed' },
-        { date: '2025-09-20', event: 'Court hearing scheduled', status: 'pending' }
-      ]
-    },
-    {
-      id: 'FIR002/2025',
-      victimCode: 'V-2025-002',
-      title: 'Domestic Violence Report',
-      offenseType: 'IPC Sec 376',
-      status: 'under_review',
-      priority: 'medium',
-      progress: 45,
-      assignedOfficer: 'Sub-Inspector R. Patel',
-      dateCreated: '2025-09-14',
-      lastUpdated: '1 day ago',
-      location: 'Mumbai, India',
-      description: 'Domestic violence case reported by victim against spouse. Collecting evidence and witness statements.',
-      pendingTasks: ['Medical exam report', 'Witness interview pending'],
-      evidence: ['Victim statement', 'Photos of injuries', 'Neighbor testimony'],
-      timeline: [
-        { date: '2025-09-14', event: 'Complaint filed', status: 'completed' },
-        { date: '2025-09-15', event: 'Victim interview conducted', status: 'completed' },
-        { date: '2025-09-17', event: 'Evidence collection', status: 'in_progress' },
-        { date: '2025-09-21', event: 'Medical examination', status: 'scheduled' }
-      ]
-    },
-    {
-      id: 'FIR003/2025',
-      victimCode: 'V-2025-003',
-      title: 'Cybercrime Investigation',
-      offenseType: 'POCSO Act Sec 5/6',
-      status: 'completed',
-      priority: 'high',
-      progress: 90,
-      assignedOfficer: 'Inspector A. Kumar',
-      dateCreated: '2025-09-10',
-      lastUpdated: '3 hours ago',
-      location: 'Bangalore, India',
-      description: 'Online exploitation case involving minor victim. Digital forensics completed, case ready for final report.',
-      pendingTasks: ['Final report review'],
-      evidence: ['Digital evidence', 'Chat logs', 'Device forensics', 'Expert testimony'],
-      timeline: [
-        { date: '2025-09-10', event: 'Case registered', status: 'completed' },
-        { date: '2025-09-11', event: 'Digital forensics initiated', status: 'completed' },
-        { date: '2025-09-13', event: 'Evidence analysis', status: 'completed' },
-        { date: '2025-09-20', event: 'Final report preparation', status: 'in_progress' }
-      ]
-    },
-    {
-      id: 'FIR004/2025',
-      victimCode: 'V-2025-004',
-      title: 'Workplace Harassment Case',
-      offenseType: 'IPC Sec 354',
-      status: 'active',
-      priority: 'medium',
-      progress: 60,
-      assignedOfficer: 'Inspector S. Singh',
-      dateCreated: '2025-09-12',
-      lastUpdated: '5 hours ago',
-      location: 'Gurgaon, India',
-      description: 'Workplace sexual harassment complaint filed against senior employee. Investigation in progress.',
-      pendingTasks: ['HR records review', 'Additional witness interviews'],
-      evidence: ['Email evidence', 'CCTV footage', 'HR complaint records'],
-      timeline: [
-        { date: '2025-09-12', event: 'Complaint received', status: 'completed' },
-        { date: '2025-09-13', event: 'Preliminary inquiry', status: 'completed' },
-        { date: '2025-09-16', event: 'Evidence collection', status: 'completed' },
-        { date: '2025-09-20', event: 'Witness interviews', status: 'in_progress' }
-      ]
-    },
-    {
-      id: 'FIR005/2025',
-      victimCode: 'V-2025-005',
-      title: 'Online Fraud Investigation',
-      offenseType: 'Cyber Crime - IT Act',
-      status: 'under_review',
-      priority: 'low',
-      progress: 30,
-      assignedOfficer: 'Sub-Inspector K. Verma',
-      dateCreated: '2025-09-18',
-      lastUpdated: '6 hours ago',
-      location: 'Chennai, India',
-      description: 'Financial fraud case involving fake online investment schemes. Initial investigation started.',
-      pendingTasks: ['Bank records analysis', 'Digital trace investigation'],
-      evidence: ['Transaction records', 'Communication logs', 'Website analysis'],
-      timeline: [
-        { date: '2025-09-18', event: 'FIR filed', status: 'completed' },
-        { date: '2025-09-19', event: 'Initial assessment', status: 'completed' },
-        { date: '2025-09-20', event: 'Bank records request', status: 'pending' }
-      ]
-    }
-  ]
+  // Fetch case data from backend
+  useEffect(() => {
+    const fetchCases = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get('http://localhost:3001/api/cases');
+        if (response.data.success) {
+          setCasesData(response.data.cases);
+        } else {
+          throw new Error(response.data.error || 'Failed to fetch cases');
+        }
+      } catch (err) {
+        console.error('Error fetching cases:', err);
+        setError(err.message || 'An error occurred while fetching cases');
+        // Set some sample data as fallback
+        setCasesData([{
+          id: 'ERROR',
+          title: 'Error Loading Cases',
+          victimCode: 'N/A',
+          offenseType: 'N/A',
+          status: 'error',
+          priority: 'high',
+          progress: 0,
+          assignedOfficer: 'N/A',
+          dateCreated: new Date().toISOString().split('T')[0],
+          lastUpdated: 'now',
+          location: 'N/A',
+          description: 'Failed to load cases from the server. Please try again later.',
+          pendingTasks: [],
+          evidence: [],
+          timeline: []
+        }]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
+    fetchCases();
+  }, []);
+    
   const filterOptions = [
     { id: 'all', name: 'All Cases', count: casesData.length },
     { id: 'active', name: 'Active', count: casesData.filter(c => c.status === 'active').length },
@@ -126,6 +57,8 @@ const Cases = () => {
   ]
 
   const getStatusColor = (status) => {
+    if (!status) return 'bg-gray-100 text-gray-800';
+    
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800'
       case 'under_review': return 'bg-yellow-100 text-yellow-800'
@@ -135,6 +68,8 @@ const Cases = () => {
   }
 
   const getPriorityColor = (priority) => {
+    if (!priority) return 'bg-gray-100 text-gray-800';
+    
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800'
       case 'medium': return 'bg-orange-100 text-orange-800'
@@ -144,10 +79,13 @@ const Cases = () => {
   }
 
   const filteredCases = casesData.filter(caseItem => {
+    // Make sure all the required properties exist before filtering
+    if (!caseItem || typeof caseItem !== 'object') return false;
+    
     const matchesFilter = selectedFilter === 'all' || caseItem.status === selectedFilter
-    const matchesSearch = caseItem.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         caseItem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         caseItem.offenseType.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = (caseItem.id?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+                         (caseItem.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+                         (caseItem.offenseType?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
     return matchesFilter && matchesSearch
   })
 
@@ -173,10 +111,10 @@ const Cases = () => {
               </div>
               <div className="flex space-x-3">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedCase.status)}`}>
-                  {selectedCase.status.replace('_', ' ').toUpperCase()}
+                  {selectedCase.status ? selectedCase.status.replace('_', ' ').toUpperCase() : 'UNKNOWN'}
                 </span>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(selectedCase.priority)}`}>
-                  {selectedCase.priority.toUpperCase()} PRIORITY
+                  {selectedCase.priority ? selectedCase.priority.toUpperCase() : 'UNKNOWN'} PRIORITY
                 </span>
               </div>
             </div>
@@ -379,10 +317,10 @@ const Cases = () => {
                 </div>
                 <div className="flex space-x-2 self-start lg:self-center">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(caseItem.status)}`}>
-                    {caseItem.status.replace('_', ' ')}
+                    {caseItem.status ? caseItem.status.replace('_', ' ') : 'Unknown'}
                   </span>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(caseItem.priority)}`}>
-                    {caseItem.priority}
+                    {caseItem.priority || 'Unknown'}
                   </span>
                 </div>
               </div>

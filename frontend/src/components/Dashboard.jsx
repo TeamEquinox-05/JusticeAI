@@ -1,12 +1,53 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import NewCaseForm from './NewCaseForm'
 import ExistingCaseUpload from './ExistingCaseUpload'
+import CaseAnalysisReport from './CaseAnalysisReport'
 
 const Dashboard = () => {
   const [selectedOption, setSelectedOption] = useState(null)
+  const [caseAnalysis, setCaseAnalysis] = useState(null)
+  const [caseId, setCaseId] = useState(null)
+  const [showAnalysisReport, setShowAnalysisReport] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Fetch case analysis data from backend every time Dashboard loads
+  useEffect(() => {
+    // Check if there's a case ID in localStorage to fetch
+    const savedCaseId = localStorage.getItem('justiceAI_caseId')
+    
+    if (savedCaseId) {
+      fetchCaseAnalysis(savedCaseId)
+    }
+  }, [])
+  
+  // Function to fetch case analysis data from backend
+  const fetchCaseAnalysis = async (id) => {
+    setIsLoading(true)
+    try {
+      const response = await axios.post('http://localhost:3001/api/case', { caseId: id })
+      
+      if (response.data.success) {
+        console.log('Fetched fresh case analysis data from backend')
+        setCaseAnalysis(response.data.analysis)
+        setCaseId(id)
+        setShowAnalysisReport(true)
+      } else {
+        console.error('Error fetching case analysis:', response.data.error)
+      }
+    } catch (error) {
+      console.error('Failed to fetch case analysis:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const resetToHome = () => {
     setSelectedOption(null)
+    setShowAnalysisReport(false)
+    // Clear case data from localStorage when explicitly returning to home
+    localStorage.removeItem('justiceAI_caseAnalysis')
+    localStorage.removeItem('justiceAI_caseId')
   }
 
   if (selectedOption === 'new-case') {
@@ -15,6 +56,24 @@ const Dashboard = () => {
 
   if (selectedOption === 'existing-case') {
     return <ExistingCaseUpload onBack={resetToHome} />
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <svg className="animate-spin -ml-1 mr-3 h-8 w-8 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-gray-600">Loading case analysis...</p>
+        </div>
+      </div>
+    )
+  }
+  
+  if (showAnalysisReport && caseAnalysis) {
+    return <CaseAnalysisReport analysisData={caseAnalysis} caseId={caseId} onBack={resetToHome} />
   }
 
   return (

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 import CaseAnalysisReport from './CaseAnalysisReport'
 
 const ExistingCaseUpload = ({ onBack }) => {
@@ -7,6 +8,7 @@ const ExistingCaseUpload = ({ onBack }) => {
   const [analysisComplete, setAnalysisComplete] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
   const [showAnalysisReport, setShowAnalysisReport] = useState(false)
+  const [analysisId, setAnalysisId] = useState(null)
 
   // Mock extracted data (in real app, this would come from AI analysis)
   const extractedData = {
@@ -42,8 +44,34 @@ const ExistingCaseUpload = ({ onBack }) => {
     }
   }
 
-  const handleAnalyzeCase = () => {
-    setShowAnalysisReport(true)
+  const handleAnalyzeCase = async () => {
+    try {
+      // Here you would typically upload the file to the server and get an analysis ID
+      // For now, we'll simulate this process
+      setIsAnalyzing(true);
+      
+      // Create form data for file upload
+      const formData = new FormData();
+      if (uploadedFile) {
+        formData.append('file', uploadedFile);
+      }
+      
+      // In a real implementation, you would upload the file and get back a case ID
+      // const response = await axios.post('http://localhost:3001/api/upload-case', formData);
+      // const caseId = response.data.caseId;
+      
+      // For demo purposes, we'll simulate a successful upload with a mock ID
+      const mockCaseId = `EXISTING-${Date.now().toString()}`;
+      setAnalysisId(mockCaseId);
+      
+      // Now we can show the analysis report with the ID
+      setShowAnalysisReport(true);
+      setIsAnalyzing(false);
+    } catch (error) {
+      console.error("Error analyzing case:", error);
+      setIsAnalyzing(false);
+      alert("Failed to analyze the case. Please try again.");
+    }
   }
 
   const handleContinueEditing = () => {
@@ -54,6 +82,8 @@ const ExistingCaseUpload = ({ onBack }) => {
   if (showAnalysisReport) {
     return (
       <CaseAnalysisReport 
+        caseId={analysisId}
+        // Provide form data as fallback
         formData={getFormDataFromExtracted()}
         onBack={onBack}
         onContinueEditing={handleContinueEditing}
