@@ -29,7 +29,7 @@ load_dotenv()
 
 # Initialize FastAPI
 app = FastAPI(
-    title="AI Chatbot with RAG",
+    title="AI Chatbot with R-A-G",
     description="A chatbot using Ollama with Retrieval Augmented Generation",
     version="1.0.0"
 )
